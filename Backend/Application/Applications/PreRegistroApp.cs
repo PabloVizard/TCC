@@ -2,7 +2,6 @@
 using Domain.Services;
 using Domain.Services.Interfaces;
 using Entities.Entity;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;

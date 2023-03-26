@@ -24,32 +24,12 @@ builder.Services.AddDbContextPool<DataContext>(options =>
 
 #endregion
 
-#region Application
 
-builder.Services.AddScoped(typeof(IBaseApp<>), typeof(BaseApp<>));
-builder.Services.AddScoped<IUsuariosApp, UsuariosApp>();
-builder.Services.AddScoped<IPreRegistroApp, PreRegistroApp>();
+InjectorDependencies.Registrer(builder.Services);
 
-#endregion
-
-#region Services
-
-builder.Services.AddScoped(typeof(IBaseService<>), typeof(BaseService<>));
-builder.Services.AddScoped<IUsuariosService, UsuariosService>();
-builder.Services.AddScoped<IPreRegistroService, PreRegistroService>();
-
-#endregion
-
-#region Repositories
-
-builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
-builder.Services.AddScoped<IUsuariosRepository, UsuariosRepository>();
-builder.Services.AddScoped<IPreRegistroRepository, PreRegistroRepository>();
-
-#endregion
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddCors();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -61,6 +41,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(x => x
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true) // allow any origin
+                .AllowCredentials()); // allow credentials
 
 app.UseHttpsRedirection();
 

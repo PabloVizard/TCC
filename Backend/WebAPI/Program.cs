@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Infrastructure.Utils;
 using Infrastructure.Data.Repositories;
 using Domain.Repositories.Interfaces;
+using Application.Mappings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,8 @@ builder.Services.AddDbContextPool<DataContext>(options =>
 
 
 InjectorDependencies.Registrer(builder.Services);
+
+builder.Services.AddAutoMapper(typeof(BaseMapping));
 
 
 builder.Services.AddControllers();

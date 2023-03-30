@@ -19,7 +19,7 @@ namespace Infrastructure.Utils
         {
             #region Application
 
-            services.AddScoped(typeof(IBaseApp<>), typeof(BaseApp<>));
+            services.AddScoped(typeof(IBaseApp<,>), typeof(BaseApp<,>));
             services.AddScoped<IUsuariosApp, UsuariosApp>();
             services.AddScoped<IPreRegistroApp, PreRegistroApp>();
 

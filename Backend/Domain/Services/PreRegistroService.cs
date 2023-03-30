@@ -1,4 +1,5 @@
-﻿using Domain.Repositories.Interfaces;
+﻿using AutoMapper;
+using Domain.Repositories.Interfaces;
 using Domain.Services.Interfaces;
 using Entities.Entity;
 using System;
@@ -12,9 +13,11 @@ namespace Domain.Services
     public class PreRegistroService: BaseService<PreRegistro>, IPreRegistroService
     {
         private readonly IPreRegistroRepository _preRegistroRepository;
-        public PreRegistroService(IPreRegistroRepository preRegistroRepository) : base(preRegistroRepository)
+        private readonly IMapper _mapper;
+        public PreRegistroService(IPreRegistroRepository preRegistroRepository, IMapper mapper) : base(preRegistroRepository, mapper)
         {
             _preRegistroRepository = preRegistroRepository;
+            _mapper = mapper;
         }
     }
 }

@@ -16,7 +16,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PreRegistro>>> GetAll()
         {
-            return await _preRegistroApp.Listar();
+            return await _preRegistroApp.ListAsync();
         }
     }
 }

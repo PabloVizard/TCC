@@ -15,65 +15,106 @@ namespace Infrastructure.Data.Repositories
     {
         private readonly DbContext _context;
         private readonly DbSet<T> _dbSet;
+
         public BaseRepository(DbContext context)
         {
             _context = context;
             _dbSet = _context.Set<T>();
         }
 
-        public bool Any(Func<T, bool> lambda)
+        public bool Any(Expression<Func<T, bool>> predicate)
         {
-            return _context.Set<T>().Any(lambda);
-        }
-        public T Find(int id)
-        {
-            return _context.Set<T>().Find(id);
-        }
-        public Task<T> FindByAtribute(Expression<Func<T, bool>> lambda)
-        {
-            return _context.Set<T>().FirstOrDefaultAsync(lambda);
-        }
-        public List<T> ToList()
-        {
-            return _context.Set<T>().ToList();
+            return _dbSet.Any(predicate);
         }
 
-        public Task<List<T>> ToListAsync()
+        public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
         {
-            return _context.Set<T>().ToListAsync();
+            return await _dbSet.AnyAsync(predicate);
         }
 
-        public Task<List<T>> ToListAsNoTracking()
-        {
-            return _context.Set<T>().AsNoTracking().ToListAsync();
-        }
         public IQueryable<T> AsNoTracking()
         {
-            return _context.Set<T>().AsNoTracking();
+            return _dbSet.AsNoTracking();
         }
-        public void Add(T item)
+
+        public T Find(int id)
         {
-            _context.Set<T>().Add(item);
+            return _dbSet.Find(id);
         }
-        public void Update(T item)
+
+        public async Task<T> FindAsync(int id)
         {
-            _context.Set<T>().Update(item);
+            return await _dbSet.FindAsync(id);
         }
-        public void Entry(T item)
+
+        public T FindBy(Expression<Func<T, bool>> predicate)
         {
-            _context.Entry(item).State = EntityState.Modified;
+            return _dbSet.FirstOrDefault(predicate);
         }
-        public void Remove(int id)
+
+        public async Task<T> FindByAsync(Expression<Func<T, bool>> predicate)
         {
-            _context.Set<T>().Remove(_context.Set<T>().Find(id));
+            return await _dbSet.FirstOrDefaultAsync(predicate);
         }
-        public void Save()
+
+        public List<T> List()
+        {
+            return _dbSet.ToList();
+        }
+
+        public async Task<List<T>> ListAsync()
+        {
+            return await _dbSet.ToListAsync();
+        }
+
+        public List<T> List(Expression<Func<T, bool>> predicate)
+        {
+            return _dbSet.Where(predicate).ToList();
+        }
+
+        public async Task<List<T>> ListAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.Where(predicate).ToListAsync();
+        }
+
+        public IQueryable<T> Query()
+        {
+            return _dbSet.AsQueryable();
+        }
+
+        public void Add(T entity)
+        {
+            _dbSet.Add(entity);
+        }
+
+        public void AddRange(IEnumerable<T> entities)
+        {
+            _dbSet.AddRange(entities);
+        }
+
+        public void Remove(T entity)
+        {
+            _dbSet.Remove(entity);
+        }
+
+        public void RemoveRange(IEnumerable<T> entities)
+        {
+            _dbSet.RemoveRange(entities);
+        }
+
+        public void Update(T entity)
+        {
+            _dbSet.Update(entity);
+        }
+
+        public void SaveChanges()
         {
             _context.SaveChanges();
         }
-        public Task SaveAsync()
+
+        public async Task SaveChangesAsync()
         {
-            return _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         #region Disposed https://docs.microsoft.com/pt-br/dotnet/standard/garbage-collection/implementing-dispose

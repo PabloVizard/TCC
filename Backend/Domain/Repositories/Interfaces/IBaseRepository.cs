@@ -10,35 +10,35 @@ namespace Domain.Repositories.Interfaces
 {
     public interface IBaseRepository<T> where T : class
     {
-         bool Any(Func<T, bool> lambda);
+        bool Any(Expression<Func<T, bool>> predicate);
+        Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
 
-         T Find(int id);
+        IQueryable<T> AsNoTracking();
 
-         Task<T> FindByAtribute(Expression<Func<T, bool>> lambda);
+        T Find(int id);
+        Task<T> FindAsync(int id);
 
-         List<T> ToList();
+        T FindBy(Expression<Func<T, bool>> predicate);
+        Task<T> FindByAsync(Expression<Func<T, bool>> predicate);
 
+        List<T> List();
+        Task<List<T>> ListAsync();
 
-         Task<List<T>> ToListAsync();
+        List<T> List(Expression<Func<T, bool>> predicate);
+        Task<List<T>> ListAsync(Expression<Func<T, bool>> predicate);
 
+        IQueryable<T> Query();
 
-         Task<List<T>> ToListAsNoTracking();
+        void Add(T entity);
+        void AddRange(IEnumerable<T> entities);
 
+        void Remove(T entity);
+        void RemoveRange(IEnumerable<T> entities);
 
-         IQueryable<T> AsNoTracking();
+        void Update(T entity);
 
-         void Add(T item);
-
-
-         void Update(T item);
-
-         void Entry(T item);
-
-         void Remove(int id);
-
-         void Save();
-
-         Task SaveAsync();
+        void SaveChanges();
+        Task SaveChangesAsync();
 
     }
 }

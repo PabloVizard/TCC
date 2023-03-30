@@ -1,4 +1,5 @@
-﻿using Domain.Repositories.Interfaces;
+﻿using AutoMapper;
+using Domain.Repositories.Interfaces;
 using Domain.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -11,41 +12,98 @@ namespace Domain.Services
 {
     public class BaseService<T> : IBaseService<T> where T : class
     {
-        private readonly IBaseRepository<T> _baseRepository;
+        private readonly IBaseRepository<T> _repository;
+        private readonly IMapper _mapper;
 
-        public BaseService(IBaseRepository<T> baseRepository)
+        protected BaseService(IBaseRepository<T> repository, IMapper mapper)
         {
-            _baseRepository = baseRepository;
+            _repository = repository;
+            _mapper = mapper;
         }
 
-        public void Adicionar(T entity)
+        public virtual bool Any(Expression<Func<T, bool>> predicate)
         {
-             _baseRepository.Add(entity);
+            return _repository.Any(predicate);
         }
 
-        public void Atualizar(T entity)
+        public virtual async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
         {
-            _baseRepository.Update(entity);
+            return await _repository.AnyAsync(predicate);
         }
 
-        public async Task<T> BuscarComPesquisa(Expression<Func<T, bool>> lambda)
+        public virtual T Find(int id)
         {
-            return await _baseRepository.FindByAtribute(lambda);
+            return _repository.Find(id);
         }
 
-        public T BuscarPorId(int id)
+        public virtual async Task<T> FindAsync(int id)
         {
-            return _baseRepository.Find(id);
+            return await _repository.FindAsync(id);
         }
 
-        public void Excluir(int id)
+        public virtual T FindBy(Expression<Func<T, bool>> predicate)
         {
-            _baseRepository.Remove(id);
+            return _repository.FindBy(predicate);
         }
 
-        public async Task<List<T>> Listar()
+        public virtual async Task<T> FindByAsync(Expression<Func<T, bool>> predicate)
         {
-            return await _baseRepository.ToListAsync();
+            return await _repository.FindByAsync(predicate);
+        }
+
+        public virtual List<T> List()
+        {
+            return _repository.List();
+        }
+
+        public virtual async Task<List<T>> ListAsync()
+        {
+            return await _repository.ListAsync();
+        }
+
+        public virtual List<T> List(Expression<Func<T, bool>> predicate)
+        {
+            return _repository.List(predicate);
+        }
+
+        public virtual async Task<List<T>> ListAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _repository.ListAsync(predicate);
+        }
+
+        public virtual IQueryable<T> Query()
+        {
+            return _repository.Query();
+        }
+
+        public virtual void Add(T entity)
+        {
+            _repository.Add(entity);
+        }
+
+        public virtual void AddRange(IEnumerable<T> entities)
+        {
+            _repository.AddRange(entities);
+        }
+
+        public virtual void Remove(T entity)
+        {
+            _repository.Remove(entity);
+        }
+
+        public virtual void RemoveRange(IEnumerable<T> entities)
+        {
+            _repository.RemoveRange(entities);
+        }
+
+        public virtual void Update(T entity)
+        {
+            _repository.Update(entity);
+        }
+
+        public virtual async Task SaveChangesAsync()
+        {
+            await _repository.SaveChangesAsync();
         }
     }
 }

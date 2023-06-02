@@ -22,5 +22,6 @@ namespace Application.Models
         public bool aluno { get; set; }
         public int? ano { get; set; }
         public int? semestre { get; set; }
+        public int? idTurma { get; set; }
     }
 }

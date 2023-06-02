@@ -22,6 +22,7 @@ namespace Infrastructure.Utils
             services.AddScoped(typeof(IBaseApp<,>), typeof(BaseApp<,>));
             services.AddScoped<IUsuariosApp, UsuariosApp>();
             services.AddScoped<IPreRegistroApp, PreRegistroApp>();
+            services.AddScoped<ITurmasApp, TurmasApp>();
 
             #endregion
 
@@ -30,14 +31,16 @@ namespace Infrastructure.Utils
             services.AddScoped(typeof(IBaseService<>), typeof(BaseService<>));
             services.AddScoped<IUsuariosService, UsuariosService>();
             services.AddScoped<IPreRegistroService, PreRegistroService>();
+            services.AddScoped<ITurmasService, TurmasService>();
 
             #endregion
 
-            #region Repositories
+            #region Repositories 
 
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddScoped<IUsuariosRepository, UsuariosRepository>();
             services.AddScoped<IPreRegistroRepository, PreRegistroRepository>();
+            services.AddScoped<ITurmasRepository, TurmasRepository>();
 
             #endregion
         }

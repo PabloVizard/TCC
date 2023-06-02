@@ -108,12 +108,82 @@ namespace WebAPI.Controllers
                     message = "Usuário cadastrado com sucesso.",
                 });
             }
-            catch (System.Exception)
+            catch (Exception er)
             {
-                return BadRequest("Erro Inesperado");
+                return BadRequest("Erro Inesperado:" + er.Message);
             }
+        }
+        [HttpPut]
+        [Route("AtualizarUsuario")]
+        public async Task<IActionResult> AtualizarUsuario([FromBody] UsuariosModel usuarios)
+        {
+            try
+            {
+                if (usuarios == null)
+                {
+                    return Unauthorized("Parametros Invalidos");
+                }
+                var usuario = _usuariosApp.Find(usuarios.idUsuarios);
+                if (usuario == null)
+                {
+                    return BadRequest("Usuário não existente.");
+                }
+                usuarios.senha = Cryptography.ConvertToSha256Hash(usuarios.senha).ToLower();
 
+                usuario.senha = usuarios.senha;
+                usuario.email = usuarios.email;
+                usuario.nomeCompleto = usuarios.nomeCompleto;
+                usuario.semestre = usuarios.semestre;
+                usuario.ano = usuarios.ano;
+                usuario.professor = usuarios.professor;
+                usuario.orientador = usuarios.orientador;
+                usuario.coordenador = usuarios.coordenador;
+                usuario.aluno = usuarios.aluno;
+                
+                _usuariosApp.Update(usuario);
+                await _usuariosApp.SaveChangesAsync();
 
+                return Ok(new {
+                    user = usuario,
+                    message = "Usuário atualizado com sucesso."
+                });
+
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
+        [HttpDelete]
+        [Route("DeletarUsuario")]
+        public async Task<IActionResult> DeletarUsuario(int idUsuario)
+        {
+            try
+            {
+                if (idUsuario == null)
+                {
+                    return Unauthorized("Parametros Invalidos");
+                }
+                var usuario = _usuariosApp.Find(idUsuario);
+                if (usuario == null)
+                {
+                    return BadRequest("Usuário não existente.");
+                }
+
+                _usuariosApp.Remove(usuario);
+                await _usuariosApp.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    user = usuario,
+                    message = "Usuário removido com sucesso."
+                });
+
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
         }
     }
 }

@@ -17,6 +17,8 @@ namespace Infrastructure.Context
 
         public DbSet<PreRegistro> preregistro { get; set; }
 
+        public DbSet<Turmas> turmas { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

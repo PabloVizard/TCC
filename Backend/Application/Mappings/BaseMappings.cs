@@ -15,6 +15,7 @@ namespace Application.Mappings
         {
             CreateMap<Usuarios, UsuariosModel>().ReverseMap();
             CreateMap<PreRegistro, PreRegistroModel>().ReverseMap();
+            CreateMap<Turmas, TurmasModel>().ReverseMap();
         }
     }
 }

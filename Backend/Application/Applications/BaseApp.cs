@@ -78,7 +78,6 @@ namespace Application.Applications
 
         public void Add(TM entity)
         {
-
             _baseService.Add(_mapper.Map<T>(entity));
         }
 

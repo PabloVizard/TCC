@@ -1,4 +1,5 @@
-﻿using Application.Applications.Interfaces;
+﻿using Application.Applications;
+using Application.Applications.Interfaces;
 using Application.Models;
 using Entities.Entity;
 using Infrastructure.Utils;
@@ -13,9 +14,11 @@ namespace WebAPI.Controllers
     public class LoginController : BaseController
     {
         private readonly IUsuariosApp _usuariosApp;
-        public LoginController(IUsuariosApp usuariosApp)
+        private readonly IPreRegistroApp _preRegistroApp;
+        public LoginController(IUsuariosApp usuariosApp, IPreRegistroApp preRegistroApp)
         {
             _usuariosApp = usuariosApp;
+            _preRegistroApp = preRegistroApp;
         }
 
         [HttpPost]
@@ -76,14 +79,25 @@ namespace WebAPI.Controllers
                 }
 
 
-                if (await _usuariosApp.AnyAsync(x => x.email == usuarios.email))
+                if (await _usuariosApp.AnyAsync(x => x.cpf == usuarios.cpf || x.email == usuarios.email))
                 {
                     return BadRequest("Usuário Já Cadastrado");
                 }
 
                 usuarios.senha = Cryptography.ConvertToSha256Hash(usuarios.senha).ToLower();
 
+                var preRegistro = await _preRegistroApp.FindByAsync(x => x.cpf == usuarios.cpf);
+
+                if (preRegistro == null)
+                {
+                    return BadRequest("Usuário não foi pré-cadastrado");
+                }
+
                 _usuariosApp.Add(usuarios);
+
+                preRegistro.cadastrado = true;
+                _preRegistroApp.Update(preRegistro);
+
                 await _usuariosApp.SaveChangesAsync();
 
 

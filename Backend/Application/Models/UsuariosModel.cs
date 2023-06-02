@@ -14,8 +14,6 @@ namespace Application.Models
 
         public string cpf { get; set; }
 
-        public virtual PreRegistro cpfPreRegistro { get; set; }
-
         public string email { get; set; }
         public string senha { get; set; }
         public bool coordenador { get; set; }

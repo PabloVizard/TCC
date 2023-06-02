@@ -18,10 +18,6 @@ namespace Infrastructure.Configurations
             builder.HasKey(u => u.idUsuarios);
             builder.Property(u => u.idUsuarios).ValueGeneratedOnAdd();
 
-            builder.HasOne(u => u.cpf)
-                   .WithMany()
-                   .HasForeignKey(u => u.cpfPreRegistro)
-                   .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

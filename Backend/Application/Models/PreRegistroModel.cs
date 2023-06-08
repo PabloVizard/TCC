@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.Models
 {
-    public class PreRegistroModel
+    public class PreRegistroModel : BaseModel
     {
         public string cpf { get; set; }
         public bool coordenador { get; set; }

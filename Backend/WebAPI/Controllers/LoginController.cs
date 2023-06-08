@@ -11,7 +11,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LoginController : BaseController
+    public class LoginController : ControllerBase
     {
         private readonly IUsuariosApp _usuariosApp;
         private readonly IPreRegistroApp _preRegistroApp;
@@ -43,11 +43,11 @@ namespace WebAPI.Controllers
 
                 AuthModel authModel = new AuthModel
                 {
-                    idUsuarios = user.idUsuarios,
+                    id = user.id,
                     nomeCompleto = user.nomeCompleto,
                     email = user.email,
                     senha = user.senha,
-                    ip = GetIpAddress()
+                    ip = Request?.HttpContext?.Connection?.RemoteIpAddress?.ToString()!
                 };
 
 
@@ -55,7 +55,7 @@ namespace WebAPI.Controllers
 
                 return Ok(new
                 {
-                    usuario = user,
+                    data = user,
                     token = tokenJWT,
                 });
             }
@@ -93,10 +93,10 @@ namespace WebAPI.Controllers
                     return BadRequest("Usuário não foi pré-cadastrado");
                 }
 
-                _usuariosApp.Add(usuarios);
+                await _usuariosApp.Add(usuarios);
 
                 preRegistro.cadastrado = true;
-                _preRegistroApp.Update(preRegistro);
+                _preRegistroApp.UpdateEntity(preRegistro);
 
                 await _usuariosApp.SaveChangesAsync();
 
@@ -104,7 +104,7 @@ namespace WebAPI.Controllers
 
                 return Ok(new
                 {
-                    usuario = usuarios,
+                    data = usuarios,
                     message = "Usuário cadastrado com sucesso.",
                 });
             }
@@ -123,7 +123,7 @@ namespace WebAPI.Controllers
                 {
                     return Unauthorized("Parametros Invalidos");
                 }
-                var usuario = _usuariosApp.Find(usuarios.idUsuarios);
+                var usuario = _usuariosApp.Find(usuarios.id);
                 if (usuario == null)
                 {
                     return BadRequest("Usuário não existente.");
@@ -140,11 +140,11 @@ namespace WebAPI.Controllers
                 usuario.coordenador = usuarios.coordenador;
                 usuario.aluno = usuarios.aluno;
                 
-                _usuariosApp.Update(usuario);
+                _usuariosApp.UpdateEntity(usuario);
                 await _usuariosApp.SaveChangesAsync();
 
                 return Ok(new {
-                    user = usuario,
+                    data = usuario,
                     message = "Usuário atualizado com sucesso."
                 });
 
@@ -175,7 +175,7 @@ namespace WebAPI.Controllers
 
                 return Ok(new
                 {
-                    user = usuario,
+                    data = usuario,
                     message = "Usuário removido com sucesso."
                 });
 

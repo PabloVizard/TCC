@@ -7,6 +7,7 @@ using Entities.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,6 +22,10 @@ namespace Application.Applications
         {
             _usuariosService = usuariosService;
             _mapper = mapper;
+        }
+        public virtual void UpdateEntity(Usuarios usuarios)
+        {
+            _usuariosService.Update(usuarios);
         }
     }
 }

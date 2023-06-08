@@ -1,4 +1,5 @@
 ﻿using Domain.Repositories.Interfaces;
+using Entities.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32.SafeHandles;
 using System;
@@ -11,98 +12,98 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data.Repositories
 {
-    public class BaseRepository<T> : IBaseRepository<T>, IDisposable where T : class
+    public class BaseRepository<Entity> : IBaseRepository<Entity>, IDisposable where Entity : BaseEntity
     {
         private readonly DbContext _context;
-        private readonly DbSet<T> _dbSet;
+        private readonly DbSet<Entity> _dbSet;
 
         public BaseRepository(DbContext context)
         {
             _context = context;
-            _dbSet = _context.Set<T>();
+            _dbSet = _context.Set<Entity>();
         }
 
-        public bool Any(Expression<Func<T, bool>> predicate)
+        public bool Any(Expression<Func<Entity, bool>> predicate)
         {
             return _dbSet.Any(predicate);
         }
 
-        public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
+        public async Task<bool> AnyAsync(Expression<Func<Entity, bool>> predicate)
         {
             return await _dbSet.AnyAsync(predicate);
         }
 
-        public IQueryable<T> AsNoTracking()
+        public IQueryable<Entity> AsNoTracking()
         {
             return _dbSet.AsNoTracking();
         }
 
-        public T Find(int id)
+        public Entity Find(int id)
         {
             return _dbSet.Find(id);
         }
 
-        public async Task<T> FindAsync(int id)
+        public async Task<Entity> FindAsync(int id)
         {
             return await _dbSet.FindAsync(id);
         }
 
-        public T FindBy(Expression<Func<T, bool>> predicate)
+        public Entity FindBy(Expression<Func<Entity, bool>> predicate)
         {
             return _dbSet.FirstOrDefault(predicate);
         }
 
-        public async Task<T> FindByAsync(Expression<Func<T, bool>> predicate)
+        public async Task<Entity> FindByAsync(Expression<Func<Entity, bool>> predicate)
         {
             return await _dbSet.FirstOrDefaultAsync(predicate);
         }
 
-        public List<T> List()
+        public List<Entity> List()
         {
             return _dbSet.ToList();
         }
 
-        public async Task<List<T>> ListAsync()
+        public async Task<List<Entity>> ListAsync()
         {
             return await _dbSet.ToListAsync();
         }
 
-        public List<T> List(Expression<Func<T, bool>> predicate)
+        public List<Entity> List(Expression<Func<Entity, bool>> predicate)
         {
             return _dbSet.Where(predicate).ToList();
         }
 
-        public async Task<List<T>> ListAsync(Expression<Func<T, bool>> predicate)
+        public async Task<List<Entity>> ListAsync(Expression<Func<Entity, bool>> predicate)
         {
             return await _dbSet.Where(predicate).ToListAsync();
         }
 
-        public IQueryable<T> Query()
+        public IQueryable<Entity> Query()
         {
             return _dbSet.AsQueryable();
         }
 
-        public void Add(T entity)
+        public virtual async Task<object> Add(Entity entity)
         {
-            _dbSet.Add(entity);
+            return _dbSet.Add(entity);
         }
 
-        public void AddRange(IEnumerable<T> entities)
+        public void AddRange(IEnumerable<Entity> entities)
         {
             _dbSet.AddRange(entities);
         }
 
-        public void Remove(T entity)
+        public void Remove(Entity entity)
         {
             _dbSet.Remove(entity);
         }
 
-        public void RemoveRange(IEnumerable<T> entities)
+        public void RemoveRange(IEnumerable<Entity> entities)
         {
             _dbSet.RemoveRange(entities);
         }
 
-        public void Update(T entity)
+        public void Update(Entity entity)
         {
             _dbSet.Update(entity);
         }

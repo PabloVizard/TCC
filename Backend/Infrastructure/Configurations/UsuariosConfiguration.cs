@@ -15,8 +15,8 @@ namespace Infrastructure.Configurations
         {
             builder.ToTable("Usuarios");
 
-            builder.HasKey(u => u.idUsuarios);
-            builder.Property(u => u.idUsuarios).ValueGeneratedOnAdd();
+            builder.HasKey(u => u.id);
+            builder.Property(u => u.id).ValueGeneratedOnAdd();
 
         }
     }

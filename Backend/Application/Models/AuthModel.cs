@@ -8,7 +8,7 @@ namespace Application.Models
 {
     public class AuthModel
     {
-        public int idUsuarios { get; set; }
+        public new int id { get; set; }
         public string nomeCompleto { get; set; }
         public string email { get; set; }
         public string senha { get; set; }

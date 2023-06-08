@@ -20,7 +20,7 @@ namespace Infrastructure.Utils
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim("idUsuarios", authModel.idUsuarios.ToString()),
+                    new Claim("id", authModel.id.ToString()),
                     new Claim("NomeCompleto", authModel.nomeCompleto.ToString()),
                     new Claim("Email", authModel.email.ToString()),
                     new Claim("Senha", authModel.senha.ToString()),
@@ -39,7 +39,7 @@ namespace Infrastructure.Utils
             var claims = handler.ReadJwtToken(token).Claims.ToArray();
             var jwtModel = new AuthModel
             {
-                idUsuarios = int.Parse(claims[0].Value),
+                id = int.Parse(claims[0].Value),
                 nomeCompleto = claims[1].Value,
                 email = claims[2].Value,
                 senha = claims[3].Value,

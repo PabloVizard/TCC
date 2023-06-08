@@ -13,7 +13,9 @@ namespace Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<PreRegistro> builder)
         {
-            builder.HasKey(p => p.cpf);
+            builder.ToTable("Preregistro");
+            builder.HasKey(p => p.id);
+            builder.Property(u => u.id).ValueGeneratedOnAdd();
 
         }
     }

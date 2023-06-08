@@ -7,12 +7,8 @@ using System.Threading.Tasks;
 
 namespace Entities.Entity
 {
-    public class Turmas: BaseEntity
+    public abstract class BaseEntity
     {
-        public string descricao { get; set; }
-        public int ano { get; set; }
-        public int semestre { get; set; }
-        public int flagPoc { get; set; }
-
+        public int id { get; set; }
     }
 }

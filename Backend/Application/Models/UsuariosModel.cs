@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Application.Models
 {
-    public class UsuariosModel
+    public class UsuariosModel : BaseModel
     {
-        public int idUsuarios { get; set; }
         public string nomeCompleto { get; set; }
 
         public string cpf { get; set; }

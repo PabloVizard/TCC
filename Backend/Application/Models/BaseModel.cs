@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace Application.Models
 {
-    public class LoginModel 
+    public abstract class BaseModel
     {
-        public string email { get; set; }
-        public string senha { get; set; }
+        public int id { get; set; }
     }
-
 }

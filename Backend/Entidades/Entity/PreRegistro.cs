@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Entities.Entity
 {
-    public class PreRegistro
+    public class PreRegistro : BaseEntity
     {
-        [Key] public string cpf { get; set; }
+        public string cpf { get; set; }
         public bool coordenador { get; set; }
         public bool professor { get; set; }
         public bool orientador { get; set; }

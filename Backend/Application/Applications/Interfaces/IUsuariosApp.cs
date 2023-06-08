@@ -10,5 +10,6 @@ namespace Application.Applications.Interfaces
 {
     public interface IUsuariosApp : IBaseApp<Usuarios, UsuariosModel>
     {
+        void UpdateEntity(Usuarios usuarios);
     }
 }

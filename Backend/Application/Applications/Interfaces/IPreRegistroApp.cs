@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 namespace Application.Applications.Interfaces
 {
     public interface IPreRegistroApp : IBaseApp<PreRegistro, PreRegistroModel>
+    
     {
+        void UpdateEntity(PreRegistro preRegistro);
     }
+    
 }

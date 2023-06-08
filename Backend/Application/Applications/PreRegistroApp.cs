@@ -7,6 +7,7 @@ using Entities.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,7 +22,11 @@ namespace Application.Applications
         {
             _preRegistroService = preRegistroService;
             _mapper = mapper;
+        }
 
+        public async void UpdateEntity(PreRegistro preRegistro)
+        {
+            _preRegistroService.Update(preRegistro);
         }
     }
     

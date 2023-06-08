@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Entities.Entity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -7,24 +8,25 @@ using System.Threading.Tasks;
 
 namespace Domain.Services.Interfaces
 {
-    public  interface IBaseService<T> where T : class
+    public  interface IBaseService<Entity> where Entity : BaseEntity
     {
-        bool Any(Expression<Func<T, bool>> predicate);
-        Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
-        T Find(int id);
-        Task<T> FindAsync(int id);
-        T FindBy(Expression<Func<T, bool>> predicate);
-        Task<T> FindByAsync(Expression<Func<T, bool>> predicate);
-        List<T> List();
-        Task<List<T>> ListAsync();
-        List<T> List(Expression<Func<T, bool>> predicate);
-        Task<List<T>> ListAsync(Expression<Func<T, bool>> predicate);
-        IQueryable<T> Query();
-        void Add(T entity);
-        void AddRange(IEnumerable<T> entities);
-        void Remove(T entity);
-        void RemoveRange(IEnumerable<T> entities);
-        void Update(T entity);
+        bool Any(Expression<Func<Entity, bool>> predicate);
+        Task<bool> AnyAsync(Expression<Func<Entity, bool>> predicate);
+        IQueryable<Entity> AsNoTracking();
+        Entity Find(int id);
+        Task<Entity> FindAsync(int id);
+        Entity FindBy(Expression<Func<Entity, bool>> predicate);
+        Task<Entity> FindByAsync(Expression<Func<Entity, bool>> predicate);
+        List<Entity> List();
+        Task<List<Entity>> ListAsync();
+        List<Entity> List(Expression<Func<Entity, bool>> predicate);
+        Task<List<Entity>> ListAsync(Expression<Func<Entity, bool>> predicate);
+        IQueryable<Entity> Query();
+        Task<object> Add(Entity entity);
+        void AddRange(IEnumerable<Entity> entities);
+        void Remove(Entity entity);
+        void RemoveRange(IEnumerable<Entity> entities);
+        void Update(Entity entity);
         Task SaveChangesAsync();
 
     }

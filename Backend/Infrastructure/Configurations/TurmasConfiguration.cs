@@ -15,8 +15,8 @@ namespace Infrastructure.Configurations
         {
             builder.ToTable("Turmas");
 
-            builder.HasKey(u => u.idTurmas);
-            builder.Property(u => u.idTurmas).ValueGeneratedOnAdd();
+            builder.HasKey(u => u.id);
+            builder.Property(u => u.id).ValueGeneratedOnAdd();
 
         }
     }

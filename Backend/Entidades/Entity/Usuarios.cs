@@ -8,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace Entities.Entity
 {
-    public class Usuarios
+    public class Usuarios: BaseEntity
     {
-        [Key]
-        public int idUsuarios { get; set; }
         public string nomeCompleto { get; set; }
 
         public string cpf { get; set; }

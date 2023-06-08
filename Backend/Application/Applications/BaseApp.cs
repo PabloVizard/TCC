@@ -1,6 +1,9 @@
 ﻿using Application.Applications.Interfaces;
+using Application.Models;
 using AutoMapper;
 using Domain.Services.Interfaces;
+using Entities.Entity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,95 +13,99 @@ using System.Threading.Tasks;
 
 namespace Application.Applications
 {
-    public class BaseApp<T, TM> : IBaseApp<T, TM> where T : class where TM : class
+    public class BaseApp<Entity, Model> : IBaseApp<Entity, Model> where Entity : BaseEntity where Model : BaseModel
     {
-        private readonly IBaseService<T> _baseService;
+        private readonly IBaseService<Entity> _baseService;
         private readonly IMapper _mapper;
 
-        public BaseApp(IBaseService<T> baseService, IMapper mapper)
+        public BaseApp(IBaseService<Entity> baseService, IMapper mapper)
         {
             _baseService = baseService;
             _mapper = mapper;
         }
 
-        public bool Any(Expression<Func<T, bool>> predicate)
+        public bool Any(Expression<Func<Entity, bool>> predicate)
         {
             return _baseService.Any(predicate);
         }
 
-        public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
+        public async Task<bool> AnyAsync(Expression<Func<Entity, bool>> predicate)
         {
             return await _baseService.AnyAsync(predicate);
         }
+        public IQueryable<Entity> AsNoTracking()
+        {
+            return _baseService.AsNoTracking();
+        }
 
-        public T Find(int id)
+        public Entity Find(int id)
         {
             return _baseService.Find(id);
         }
 
-        public async Task<T> FindAsync(int id)
+        public async Task<Entity> FindAsync(int id)
         {
             return await _baseService.FindAsync(id);
         }
 
-        public T FindBy(Expression<Func<T, bool>> predicate)
+        public Entity FindBy(Expression<Func<Entity, bool>> predicate)
         {
             return _baseService.FindBy(predicate);
         }
 
-        public async Task<T> FindByAsync(Expression<Func<T, bool>> predicate)
+        public async Task<Entity> FindByAsync(Expression<Func<Entity, bool>> predicate)
         {
             return await _baseService.FindByAsync(predicate);
         }
 
-        public List<T> List()
+        public List<Entity> List()
         {
             return _baseService.List();
         }
 
-        public async Task<List<T>> ListAsync()
+        public async Task<List<Entity>> ListAsync()
         {
             return await _baseService.ListAsync();
         }
 
-        public List<T> List(Expression<Func<T, bool>> predicate)
+        public List<Entity> List(Expression<Func<Entity, bool>> predicate)
         {
             return _baseService.List(predicate);
         }
 
-        public async Task<List<T>> ListAsync(Expression<Func<T, bool>> predicate)
+        public async Task<List<Entity>> ListAsync(Expression<Func<Entity, bool>> predicate)
         {
             return await _baseService.ListAsync(predicate);
         }
 
-        public IQueryable<T> Query()
+        public IQueryable<Entity> Query()
         {
             return _baseService.Query();
         }
 
-        public void Add(TM entity)
+        public virtual async Task<object> Add(Model dado)
         {
-            _baseService.Add(_mapper.Map<T>(entity));
+            return await _baseService.Add(_mapper.Map<Entity>(dado));
         }
 
-        public void AddRange(IEnumerable<T> entities)
+        public void AddRange(IEnumerable<Entity> entities)
         {
             _baseService.AddRange(entities);
         }
 
-        public void Remove(T entity)
+        public void Remove(Entity entity)
         {
             _baseService.Remove(entity);
         }
 
-        public void RemoveRange(IEnumerable<T> entities)
+        public void RemoveRange(IEnumerable<Entity> entities)
         {
             _baseService.RemoveRange(entities);
         }
 
-        public void Update(T entity)
+        public void Update(Model dado)
         {
-            _baseService.Update(entity);
+            _baseService.Update(_mapper.Map<Entity>(dado));
         }
 
         public async Task SaveChangesAsync()

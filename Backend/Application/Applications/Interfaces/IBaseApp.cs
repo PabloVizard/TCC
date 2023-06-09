@@ -28,7 +28,7 @@ namespace Application.Applications.Interfaces
         void AddRange(IEnumerable<Entity> entities);
         void Remove(Entity entity);
         void RemoveRange(IEnumerable<Entity> entities);
-        void Update(Model dado);
+        void Update(Entity dado);
         Task SaveChangesAsync();
     }
 }

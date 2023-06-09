@@ -103,9 +103,9 @@ namespace Application.Applications
             _baseService.RemoveRange(entities);
         }
 
-        public void Update(Model dado)
+        public void Update(Entity dado)
         {
-            _baseService.Update(_mapper.Map<Entity>(dado));
+            _baseService.Update((dado));
         }
 
         public async Task SaveChangesAsync()

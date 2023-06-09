@@ -3,6 +3,7 @@ using Application.Applications.Interfaces;
 using Application.Models;
 using Entities.Entity;
 using Infrastructure.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -11,6 +12,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class LoginController : ControllerBase
     {
         private readonly IUsuariosApp _usuariosApp;
@@ -23,6 +25,7 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         [Route("LoginUsuario")]
+        [AllowAnonymous]
         public async Task<IActionResult> LoginUsuario([FromBody] LoginModel loginModel)
         {
             try
@@ -47,7 +50,15 @@ namespace WebAPI.Controllers
                     nomeCompleto = user.nomeCompleto,
                     email = user.email,
                     senha = user.senha,
-                    ip = Request?.HttpContext?.Connection?.RemoteIpAddress?.ToString()!
+                    ip = Request?.HttpContext?.Connection?.RemoteIpAddress?.ToString()!,
+                    coordenador = user.coordenador,
+                    professor = user.professor,
+                    orientador = user.orientador,
+                    aluno = user.aluno,
+                    idTurma = user?.idTurma,
+                    idProfessorOrientador = user?.idProfessorOrientador,
+                    idAlunoOrientado = user?.idAlunoOrientado,
+
                 };
 
 
@@ -69,6 +80,7 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         [Route("RegistrarUsuario")]
+        [AllowAnonymous]
         public async Task<IActionResult> RegistrarUsuario([FromBody] UsuariosModel usuarios)
         {
             try
@@ -130,16 +142,17 @@ namespace WebAPI.Controllers
                 }
                 usuarios.senha = Cryptography.ConvertToSha256Hash(usuarios.senha).ToLower();
 
-                usuario.senha = usuarios.senha;
-                usuario.email = usuarios.email;
-                usuario.nomeCompleto = usuarios.nomeCompleto;
-                usuario.semestre = usuarios.semestre;
-                usuario.ano = usuarios.ano;
+                usuario.senha = usuarios.senha ?? usuario.senha;
+                usuario.email = usuarios.email ?? usuario.email;
+                usuario.nomeCompleto = usuarios.nomeCompleto ?? usuario.nomeCompleto;
                 usuario.professor = usuarios.professor;
                 usuario.orientador = usuarios.orientador;
                 usuario.coordenador = usuarios.coordenador;
                 usuario.aluno = usuarios.aluno;
-                
+                usuario.idTurma = usuarios.idTurma ?? usuario.idTurma;
+                usuario.idProfessorOrientador = usuarios.idProfessorOrientador ?? usuario.idProfessorOrientador;
+                usuario.idAlunoOrientado = usuarios.idAlunoOrientado ?? usuario.idAlunoOrientado;
+
                 _usuariosApp.UpdateEntity(usuario);
                 await _usuariosApp.SaveChangesAsync();
 

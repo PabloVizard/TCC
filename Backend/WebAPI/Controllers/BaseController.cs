@@ -5,6 +5,7 @@ using Entities.Entity;
 using Infrastructure.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BaseController<Entity, Model> : ControllerBase
         where Entity : BaseEntity
         where Model : BaseModel
@@ -31,11 +33,47 @@ namespace WebAPI.Controllers
 
         
         [HttpGet]
-        [Route("ObterTodos")]
-        public async Task<IActionResult> ObterTodos()
+        [Route("ObterPorId")]
+        public virtual async Task<IActionResult> ObterPorId(int id)
         {
             try
             {
+                AuthModel authModel;
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+
+                return Ok(await _baseApp.FindAsync(id));
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("ObterTodos")]
+        public virtual async Task<IActionResult> ObterTodos()
+        {
+            try
+            {
+                AuthModel authModel;
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+
                 return Ok(await _baseApp.ListAsync());
             }
             catch (Exception er)
@@ -43,23 +81,35 @@ namespace WebAPI.Controllers
                 return BadRequest("Erro Inesperado:" + er.Message);
             }
         }
+
         [HttpPut]
         [Route("Atualizar")]
-        public async Task<IActionResult> Atualizar(Model dados)
+        public virtual async Task<IActionResult> Atualizar(Model dados)
         {
             try
             {
-                var dadosFind = await _baseApp.AsNoTracking().FirstOrDefaultAsync(x => x.id == dados.id);
+                var dadosFind = await _baseApp.FindAsync(dados.id);
                 if (dadosFind == null)
                 {
                     return BadRequest("Dados não existente");
                 }
 
+                var dadosProperties = dados.GetType().GetProperties();
+                var dadosFindProperties = dadosFind.GetType().GetProperties();
 
-                _baseApp.Update(dados);
+                foreach (var property in dadosProperties)
+                {
+                    var findProperty = dadosFindProperties.FirstOrDefault(p => p.Name == property.Name);
+                    if (findProperty != null && property.GetValue(dados) != null)
+                    {
+                        findProperty.SetValue(dadosFind, property.GetValue(dados));
+                    }
+                }
+
+                _baseApp.Update(dadosFind);
                 await _baseApp.SaveChangesAsync();
 
-                return Ok(dados);
+                return Ok(dadosFind);
             }
             catch (DbUpdateException ex)
             {
@@ -75,7 +125,7 @@ namespace WebAPI.Controllers
         }
         [HttpPost]
         [Route("Registrar")]
-        public async Task<IActionResult> Registrar(Model dados)
+        public virtual async Task<IActionResult> Registrar(Model dados)
         {
             try
             {
@@ -100,7 +150,7 @@ namespace WebAPI.Controllers
 
         [HttpDelete]
         [Route("Remover")]
-        public async Task<IActionResult> Remover(int id)
+        public virtual async Task<IActionResult> Remover(int id)
         {
             try
             {

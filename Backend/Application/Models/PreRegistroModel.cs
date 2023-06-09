@@ -13,11 +13,8 @@ namespace Application.Models
         public bool professor { get; set; }
         public bool orientador { get; set; }
         public bool aluno { get; set; }
-
-        public int? ano { get; set; }
-        public int? semestre { get; set; }
         public bool cadastrado { get; set; }
-
+        public int idTurma { get; set; }
 
     }
 }

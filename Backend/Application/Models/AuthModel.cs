@@ -13,5 +13,13 @@ namespace Application.Models
         public string email { get; set; }
         public string senha { get; set; }
         public string ip { get; set; }
+        public bool coordenador { get; set; }
+        public bool professor { get; set; }
+        public bool orientador { get; set; }
+        public bool aluno { get; set; }
+        public int? idTurma { get; set; }
+        public int? idProfessorOrientador { get; set; }
+        public int? idAlunoOrientado { get; set; }
+
     }
 }

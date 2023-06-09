@@ -9,10 +9,10 @@ namespace Entities.Entity
 {
     public class Turmas: BaseEntity
     {
-        public string descricao { get; set; }
+        public string? descricao { get; set; }
         public int ano { get; set; }
         public int semestre { get; set; }
-        public int flagPoc { get; set; }
+        public int nPoc { get; set; }
 
     }
 }

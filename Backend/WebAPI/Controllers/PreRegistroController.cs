@@ -9,7 +9,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = "Coordenador")]
+    [Authorize]
     public class PreRegistroController : BaseController<PreRegistro, PreRegistroModel>
     {
         private readonly IPreRegistroApp _preRegistroApp;

@@ -17,6 +17,7 @@ namespace Application.Mappings
             CreateMap<PreRegistro, PreRegistroModel>().ReverseMap();
             CreateMap<Turmas, TurmasModel>().ReverseMap();
             CreateMap<Orientacoes, OrientacoesModel>().ReverseMap();
+            CreateMap<UsuarioTurma, UsuarioTurmaModel>().ReverseMap();
         }
     }
 }

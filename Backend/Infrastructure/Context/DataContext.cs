@@ -20,6 +20,7 @@ namespace Infrastructure.Context
 
         public DbSet<Turmas> turmas { get; set; }
         public DbSet<Orientacoes> orientacoes { get; set; }
+        public DbSet<UsuarioTurma> usuarioTurmas { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -38,6 +39,7 @@ namespace Infrastructure.Context
             modelBuilder.ApplyConfiguration(new PreRegistroConfiguration());
             modelBuilder.ApplyConfiguration(new UsuarioConfiguration());
             modelBuilder.ApplyConfiguration(new TurmasConfiguration());
+            modelBuilder.ApplyConfiguration(new UsuarioTurmaConfiguration());
         }
     }
     

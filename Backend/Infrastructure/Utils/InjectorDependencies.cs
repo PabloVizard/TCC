@@ -23,6 +23,7 @@ namespace Infrastructure.Utils
             services.AddScoped<IUsuariosApp, UsuariosApp>();
             services.AddScoped<IPreRegistroApp, PreRegistroApp>();
             services.AddScoped<ITurmasApp, TurmasApp>();
+            services.AddScoped<IOrientacoesApp, OrientacoesApp>();
 
             #endregion
 
@@ -32,6 +33,7 @@ namespace Infrastructure.Utils
             services.AddScoped<IUsuariosService, UsuariosService>();
             services.AddScoped<IPreRegistroService, PreRegistroService>();
             services.AddScoped<ITurmasService, TurmasService>();
+            services.AddScoped<IOrientacoesService, OrientacoesService>();
 
             #endregion
 
@@ -41,6 +43,7 @@ namespace Infrastructure.Utils
             services.AddScoped<IUsuariosRepository, UsuariosRepository>();
             services.AddScoped<IPreRegistroRepository, PreRegistroRepository>();
             services.AddScoped<ITurmasRepository, TurmasRepository>();
+            services.AddScoped<IOrientacoesRepository, OrientacoesRepository>();
 
             #endregion
         }

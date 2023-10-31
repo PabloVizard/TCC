@@ -16,7 +16,5 @@ namespace Entities.Entity
         public bool aluno { get; set; }
         public bool cadastrado { get; set; }
         public int idTurma { get; set; }
-
-
     }
 }

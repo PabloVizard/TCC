@@ -55,9 +55,6 @@ namespace WebAPI.Controllers
                     professor = user.professor,
                     orientador = user.orientador,
                     aluno = user.aluno,
-                    idTurma = user?.idTurma,
-                    idProfessorOrientador = user?.idProfessorOrientador,
-                    idAlunoOrientado = user?.idAlunoOrientado,
 
                 };
 
@@ -127,6 +124,7 @@ namespace WebAPI.Controllers
         }
         [HttpPut]
         [Route("AtualizarUsuario")]
+        [AllowAnonymous]
         public async Task<IActionResult> AtualizarUsuario([FromBody] UsuariosModel usuarios)
         {
             try
@@ -149,9 +147,6 @@ namespace WebAPI.Controllers
                 usuario.orientador = usuarios.orientador;
                 usuario.coordenador = usuarios.coordenador;
                 usuario.aluno = usuarios.aluno;
-                usuario.idTurma = usuarios.idTurma ?? usuario.idTurma;
-                usuario.idProfessorOrientador = usuarios.idProfessorOrientador ?? usuario.idProfessorOrientador;
-                usuario.idAlunoOrientado = usuarios.idAlunoOrientado ?? usuario.idAlunoOrientado;
 
                 _usuariosApp.UpdateEntity(usuario);
                 await _usuariosApp.SaveChangesAsync();

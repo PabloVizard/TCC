@@ -1,4 +1,5 @@
 ﻿using Entities.Entity;
+using Infrastructure.Configurations;
 using Infrastructure.Utils;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -18,6 +19,7 @@ namespace Infrastructure.Context
         public DbSet<PreRegistro> preregistro { get; set; }
 
         public DbSet<Turmas> turmas { get; set; }
+        public DbSet<Orientacoes> orientacoes { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -27,6 +29,15 @@ namespace Infrastructure.Context
                 optionsBuilder.UseMySql(Settings.connectionDev, new MySqlServerVersion(new Version()));
                 base.OnConfiguring(optionsBuilder);
             }
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfiguration(new OrientacoesConfiguration());
+            modelBuilder.ApplyConfiguration(new PreRegistroConfiguration());
+            modelBuilder.ApplyConfiguration(new UsuarioConfiguration());
+            modelBuilder.ApplyConfiguration(new TurmasConfiguration());
         }
     }
     

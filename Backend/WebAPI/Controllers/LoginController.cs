@@ -51,10 +51,7 @@ namespace WebAPI.Controllers
                     email = user.email,
                     senha = user.senha,
                     ip = Request?.HttpContext?.Connection?.RemoteIpAddress?.ToString()!,
-                    coordenador = user.coordenador,
-                    professor = user.professor,
-                    orientador = user.orientador,
-                    aluno = user.aluno,
+                    tipoUsuario = user.tipoUsuario
 
                 };
 
@@ -143,10 +140,7 @@ namespace WebAPI.Controllers
                 usuario.senha = usuarios.senha ?? usuario.senha;
                 usuario.email = usuarios.email ?? usuario.email;
                 usuario.nomeCompleto = usuarios.nomeCompleto ?? usuario.nomeCompleto;
-                usuario.professor = usuarios.professor;
-                usuario.orientador = usuarios.orientador;
-                usuario.coordenador = usuarios.coordenador;
-                usuario.aluno = usuarios.aluno;
+                usuario.tipoUsuario = usuarios.tipoUsuario;
 
                 _usuariosApp.UpdateEntity(usuario);
                 await _usuariosApp.SaveChangesAsync();

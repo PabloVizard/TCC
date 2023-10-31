@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Entities.Enumerations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,6 @@ namespace Application.Models
     {
         public int idUsuario { get; set; }
         public int idTurma { get; set; }
-        public int tipoUsuario { get; set; }
+        public TipoUsuario tipoUsuario { get; set; }
     }
 }

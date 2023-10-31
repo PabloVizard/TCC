@@ -96,6 +96,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("Orientador", policy => policy.RequireClaim(ClaimTypes.Role, "Orientador"));
     options.AddPolicy("Professor", policy => policy.RequireClaim(ClaimTypes.Role, "Professor"));
     options.AddPolicy("Coordenador", policy => policy.RequireClaim(ClaimTypes.Role, "Coordenador"));
+    options.AddPolicy("ProfessorOrientador", policy => policy.RequireClaim(ClaimTypes.Role, "ProfessorOrientador"));
 });
 
 var app = builder.Build();

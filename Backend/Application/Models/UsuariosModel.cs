@@ -1,4 +1,5 @@
 ﻿using Entities.Entity;
+using Entities.Enumerations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,6 @@ namespace Application.Models
 
         public string email { get; set; }
         public string senha { get; set; }
-        public bool coordenador { get; set; }
-        public bool professor { get; set; }
-        public bool orientador { get; set; }
-        public bool aluno { get; set; }
+        public TipoUsuario tipoUsuario { get; set; }
     }
 }

@@ -13,9 +13,91 @@ namespace WebAPI.Controllers
     public class UsuarioTurmaController : BaseController<UsuarioTurma, UsuarioTurmaModel>
     {
         private readonly IUsuarioTurmaApp _usuarioTurmaApp;
-        public UsuarioTurmaController(IUsuarioTurmaApp usuarioTurmaApp) : base(usuarioTurmaApp)
+        private readonly IUsuariosApp _usuarioApp;
+        public UsuarioTurmaController(IUsuarioTurmaApp usuarioTurmaApp, IUsuariosApp usuariosApp) : base(usuarioTurmaApp)
         {
             _usuarioTurmaApp = usuarioTurmaApp;
+            _usuarioApp = usuariosApp;
+        }
+
+        [HttpGet]
+        [Route("ObterUsuariosPorId")]
+        public async Task<IActionResult> ObterUsuariosPorId(int id)
+        {
+            try
+            {
+                AuthModel authModel;
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+
+                var usuarioTurma = await _usuarioTurmaApp.FindAsync(id);
+
+                if(usuarioTurma is null)
+                {
+                    return BadRequest("UsuarioTurma não encontrado.");
+                }
+
+                var usuario = await _usuarioApp.FindAsync(usuarioTurma.idUsuario);
+
+                if(usuario is null)
+                {
+                    return BadRequest("Usuario não encontrado.");
+                }
+
+                return Ok(usuario);
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("ObterTodosUsuariosPorTurma")]
+        public async Task<IActionResult> ObterTodosUsuariosPorTurma(int idTurma)
+        {
+            try
+            {
+                AuthModel authModel;
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+
+                var usuariosTurma = await _usuarioTurmaApp.ListAsync(x => x.idTurma == idTurma);
+
+                if (usuariosTurma is null)
+                {
+                    return BadRequest("UsuariosTurma não encontrados.");
+                }
+
+                List<int> userIds = usuariosTurma.Select(ut => ut.idUsuario).ToList();
+
+                var usuarios = await _usuarioApp.FindByAsync(user => userIds.Contains(user.id));
+
+                if (usuarios == null)
+                {
+                    return BadRequest("Usuários não encontrados.");
+                }
+
+                return Ok(usuarios);
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
         }
     }
 }

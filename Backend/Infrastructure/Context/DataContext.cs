@@ -22,6 +22,7 @@ namespace Infrastructure.Context
         public DbSet<Orientacoes> orientacoes { get; set; }
         public DbSet<UsuarioTurma> usuarioTurmas { get; set; }
         public DbSet<Tarefas> tarefas { get; set; }
+        public DbSet<TarefaAluno> tarefaaluno { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -42,6 +43,7 @@ namespace Infrastructure.Context
             modelBuilder.ApplyConfiguration(new TurmasConfiguration());
             modelBuilder.ApplyConfiguration(new UsuarioTurmaConfiguration());
             modelBuilder.ApplyConfiguration(new TarefasConfiguration());
+            modelBuilder.ApplyConfiguration(new TarefaAlunoConfiguration());
         }
     }
     

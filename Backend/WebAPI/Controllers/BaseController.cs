@@ -73,8 +73,9 @@ namespace WebAPI.Controllers
                 {
                     return Unauthorized("Erro ao obter token:" + ex.Message);
                 }
+                var retorno = await _baseApp.ListAsync();
 
-                return Ok(await _baseApp.ListAsync());
+                return Ok(retorno);
             }
             catch (Exception er)
             {

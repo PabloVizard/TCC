@@ -14,10 +14,12 @@ namespace WebAPI.Controllers
     {
         private readonly IUsuarioTurmaApp _usuarioTurmaApp;
         private readonly IUsuariosApp _usuarioApp;
-        public UsuarioTurmaController(IUsuarioTurmaApp usuarioTurmaApp, IUsuariosApp usuariosApp) : base(usuarioTurmaApp)
+        private readonly ITurmasApp _turmasApp;
+        public UsuarioTurmaController(IUsuarioTurmaApp usuarioTurmaApp, IUsuariosApp usuariosApp, ITurmasApp turmasApp) : base(usuarioTurmaApp)
         {
             _usuarioTurmaApp = usuarioTurmaApp;
             _usuarioApp = usuariosApp;
+            _turmasApp = turmasApp;
         }
 
         [HttpGet]
@@ -93,6 +95,44 @@ namespace WebAPI.Controllers
                 }
 
                 return Ok(usuarios);
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
+        [HttpGet]
+        [Route("ObterTurmaPorUsuarioId")]
+        public async Task<IActionResult> ObterTurmaPorUsuarioId(int idUsuario)
+        {
+            try
+            {
+                AuthModel authModel;
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+
+                var usuarioTurma = await _usuarioTurmaApp.FindByAsync(x => x.idUsuario == idUsuario);
+
+                if (usuarioTurma is null)
+                {
+                    return BadRequest("UsuarioTurma não encontrado.");
+                }
+
+                var turma = await _turmasApp.FindAsync(usuarioTurma.idTurma);
+
+                if (turma == null)
+                {
+                    return BadRequest("Turma não encontrada.");
+                }
+
+                return Ok(turma);
             }
             catch (Exception er)
             {

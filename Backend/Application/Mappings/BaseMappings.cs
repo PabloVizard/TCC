@@ -18,6 +18,7 @@ namespace Application.Mappings
             CreateMap<Turmas, TurmasModel>().ReverseMap();
             CreateMap<Orientacoes, OrientacoesModel>().ReverseMap();
             CreateMap<UsuarioTurma, UsuarioTurmaModel>().ReverseMap();
+            CreateMap<Tarefas, TarefasModel>().ReverseMap();
         }
     }
 }

@@ -23,4 +23,11 @@ namespace Entities.Enumerations
         Adiado,
         Reprovado
     }
+
+    public enum TipoCompromisso
+    {
+        Aula = 1,
+        Reunião,
+        DefesaPoc,
+    }
 }

@@ -71,6 +71,53 @@ namespace WebAPI.Controllers
                 return BadRequest("Erro Inesperado:" + er.Message);
             }
         }
+        [HttpGet]
+        [Route("ObterAlunosDisponiveis")]
+        public async Task<IActionResult> ObterAlunosDisponiveis()
+        {
+            try
+            {
+                AuthModel authModel;
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+
+                var alunos = await _usuariosApp.ListAsync(x => x.tipoUsuario == Entities.Enumerations.TipoUsuario.Aluno);
+
+                if(alunos is null)
+                {
+                    NoContent();
+                }
+
+                var orientacao = await _orientacoesApp.ListAsync();              
+
+                List<UsuariosLightModel> alunosDisponiveis = alunos.Where(aluno => !orientacao.Any(ori => ori.idAlunoOrientado == aluno.id))
+                    .Select(aluno => new UsuariosLightModel
+                    {
+                        nomeCompleto = aluno.nomeCompleto,
+                        email = aluno.email,
+                        id = aluno.id,
+                        tipoUsuario = aluno.tipoUsuario
+                    }).ToList();
+
+                if(alunosDisponiveis is null)
+                {
+                    NoContent();
+                }
+
+                return Ok(alunosDisponiveis);
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
         private UsuariosLightModel ObterUsuarioLightPorId(int idUsuario)
         {
             var usuario = _usuariosApp.Find(idUsuario);

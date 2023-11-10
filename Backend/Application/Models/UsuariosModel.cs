@@ -18,4 +18,12 @@ namespace Application.Models
         public string senha { get; set; }
         public TipoUsuario tipoUsuario { get; set; }
     }
+
+    public class UsuariosLightModel : BaseModel
+    {
+        public string nomeCompleto { get; set; }
+        public string email { get; set; }
+        public TipoUsuario tipoUsuario { get; set; }
+    }
+
 }

@@ -20,6 +20,7 @@ namespace Application.Mappings
             CreateMap<UsuarioTurma, UsuarioTurmaModel>().ReverseMap();
             CreateMap<Tarefas, TarefasModel>().ReverseMap();
             CreateMap<TarefaAluno, TarefaAlunoModel>().ReverseMap();
+            CreateMap<Projetos, ProjetosModel>().ReverseMap();
         }
     }
 }

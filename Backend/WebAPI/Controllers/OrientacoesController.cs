@@ -60,6 +60,8 @@ namespace WebAPI.Controllers
                     Projeto = ObterProjetoPorId(orientacao.idProjeto),
                     Turma = ObterTurmaPorId(orientacao.idTurma),
                     statusAprovacao = orientacao.statusAprovacao,
+                    anexoResumoTrabalho = orientacao?.anexoResumoTrabalho,
+                    localDivulgacao = orientacao?.localDivulgacao
                 };
 
                 return Ok(orientacaoFull);

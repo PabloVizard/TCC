@@ -16,6 +16,8 @@ namespace Application.Models
         public int idProjeto { get; set; }
         public int idTurma { get; set; }
         public StatusAprovacao statusAprovacao { get; set; }
+        public string? anexoResumoTrabalho { get; set; }
+        public string? localDivulgacao { get; set; }
     }
 
     public class OrientacoesFullModel : BaseModel
@@ -26,5 +28,7 @@ namespace Application.Models
         public ProjetosModel Projeto { get; set; }
         public TurmasModel Turma { get; set; }
         public StatusAprovacao statusAprovacao { get; set; }
+        public string? anexoResumoTrabalho { get; set; }
+        public string? localDivulgacao { get; set; }
     }
 }

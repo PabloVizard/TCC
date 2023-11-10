@@ -16,5 +16,6 @@ namespace Application.Models
         public string nomeAlunoOrientado { get; set; }
         public int ano { get; set; }
         public int semestre { get; set; }
+        public bool bancaConfirmada { get; set; }
     }
 }

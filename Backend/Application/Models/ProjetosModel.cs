@@ -21,6 +21,5 @@ namespace Application.Models
         public string descricao { get; set; }
         public UsuariosLightModel? ProfessorResponsavel { get; set; }
         public UsuariosLightModel? AlunoResponsavel { get; set; }
-
     }
 }

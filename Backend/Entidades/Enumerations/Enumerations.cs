@@ -14,4 +14,13 @@ namespace Entities.Enumerations
         ProfessorOrientador,
         Coordenador
     }
+
+    public enum StatusAprovacao
+    {
+        Iniciado = 1,
+        PodeDefender,
+        Concluido,
+        Adiado,
+        Reprovado
+    }
 }

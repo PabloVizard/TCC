@@ -208,32 +208,48 @@ namespace WebAPI.Controllers
 
         [HttpPut]
         [Route("Atualizar")]
-        public override async Task<IActionResult> Atualizar(ProjetosModel dados)
+        public override async Task<IActionResult> Atualizar(ProjetosModel projetos)
         {
             try
             {
-                var dadosFind = await _projetosApp.FindAsync(dados.id);
-                if (dadosFind == null)
+                var projetosFind = await _projetosApp.FindAsync(projetos.id);
+                if (projetosFind == null)
                 {
                     return BadRequest("Dados não existente");
                 }
 
-                var dadosProperties = dados.GetType().GetProperties();
-                var dadosFindProperties = dadosFind.GetType().GetProperties();
+                var dadosProperties = projetos.GetType().GetProperties();
+                var dadosFindProperties = projetosFind.GetType().GetProperties();
 
                 foreach (var property in dadosProperties)
                 {
                     var findProperty = dadosFindProperties.FirstOrDefault(p => p.Name == property.Name);
-                    if (findProperty != null && property.GetValue(dados) != null)
+                    if (findProperty != null && property.GetValue(projetos) != null)
                     {
-                        findProperty.SetValue(dadosFind, property.GetValue(dados));
+                        findProperty.SetValue(projetosFind, property.GetValue(projetos));
                     }
                 }
 
-                _projetosApp.Update(dadosFind);
+                _projetosApp.Update(projetosFind);
                 await _projetosApp.SaveChangesAsync();
 
-                return Ok(dadosFind);
+                var orientacoesFind = await _orientacoesApp.FindByAsync(x => x.idProjeto ==  projetos.id);
+                if(orientacoesFind != null)
+                {
+                    if (projetos.idAlunoResponsavel != null)
+                    {
+                        orientacoesFind.idAlunoOrientado = (int)projetos.idAlunoResponsavel;
+                        _orientacoesApp.Update(orientacoesFind);
+                        await _orientacoesApp.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        _orientacoesApp.Remove(orientacoesFind);
+                        await _orientacoesApp.SaveChangesAsync();
+                    }
+                }
+
+                return Ok(projetosFind);
             }
             catch (DbUpdateException ex)
             {

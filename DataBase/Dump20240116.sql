@@ -16,8 +16,8 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `bancas`
---
+CREATE SCHEMA IF NOT EXISTS `database` DEFAULT CHARACTER SET utf8 ;
+USE `database` ;
 
 DROP TABLE IF EXISTS `bancas`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

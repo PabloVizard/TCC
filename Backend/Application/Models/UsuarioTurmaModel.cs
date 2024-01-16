@@ -12,5 +12,6 @@ namespace Application.Models
         public int idUsuario { get; set; }
         public int idTurma { get; set; }
         public TipoUsuario tipoUsuario { get; set; }
+        public string nomeCompleto { get; set; }
     }
 }

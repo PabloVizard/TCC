@@ -59,6 +59,7 @@ namespace WebAPI.Controllers
                         id = projetos.id,
                         nome = projetos.nome,
                         descricao = projetos.descricao,
+                        area = projetos.area,
                         ProfessorResponsavel = obterUsuarioLightPorId(projetos.idProfessorResponsavel),
                         AlunoResponsavel = obterUsuarioLightPorId(projetos.idAlunoResponsavel is not null ? (int)projetos.idAlunoResponsavel : 0)
                     });
@@ -105,6 +106,7 @@ namespace WebAPI.Controllers
                         id = projetos.id,
                         nome = projetos.nome,
                         descricao = projetos.descricao,
+                        area = projetos.area,
                         ProfessorResponsavel = obterUsuarioLightPorId(projetos.idProfessorResponsavel),
                         AlunoResponsavel = obterUsuarioLightPorId(projetos.idAlunoResponsavel is not null ? (int)projetos.idAlunoResponsavel : 0)
                     });

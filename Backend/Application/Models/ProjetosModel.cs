@@ -12,6 +12,7 @@ namespace Application.Models
         public string descricao { get; set; }
         public int idProfessorResponsavel { get; set; }
         public int? idAlunoResponsavel { get; set; }
+        public string area { get; set; }
 
     }
 
@@ -19,6 +20,7 @@ namespace Application.Models
     {
         public string nome { get; set; }
         public string descricao { get; set; }
+        public string area { get; set; }
         public UsuariosLightModel? ProfessorResponsavel { get; set; }
         public UsuariosLightModel? AlunoResponsavel { get; set; }
     }

@@ -16,13 +16,15 @@ namespace WebAPI.Controllers
         private readonly IUsuariosApp _usuariosApp;
         private readonly ITurmasApp _turmasApp;
         private readonly IProjetosApp _projetosApp;
+        private readonly IBancasApp _bancasApp;
         private readonly IMapper _mapper;
-        public OrientacoesController(IOrientacoesApp orientacoesApp, IUsuariosApp usuariosApp, ITurmasApp turmasApp, IProjetosApp projetosApp, IMapper mapper) : base(orientacoesApp)
+        public OrientacoesController(IOrientacoesApp orientacoesApp, IUsuariosApp usuariosApp, ITurmasApp turmasApp, IProjetosApp projetosApp, IBancasApp bancasApp, IMapper mapper) : base(orientacoesApp)
         {
             _orientacoesApp = orientacoesApp;
             _usuariosApp = usuariosApp;
             _turmasApp = turmasApp;
             _projetosApp = projetosApp;
+            _bancasApp = bancasApp;
             _mapper = mapper;
         }
 
@@ -65,6 +67,101 @@ namespace WebAPI.Controllers
                 };
 
                 return Ok(orientacaoFull);
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("ObterOrientacaoProfessor")]
+        public async Task<IActionResult> ObterOrientacaoProfessor()
+        {
+            try
+            {
+                AuthModel authModel;
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+
+                var orientacoes = await _orientacoesApp.ListAsync(x => x.idProfessorOrientador == authModel.id);
+
+                if (orientacoes == null)
+                {
+                    return NoContent();
+                }
+
+                List<OrientacoesFullModel> orientacoesFull = new List<OrientacoesFullModel>();
+                
+                foreach (var orientacao in orientacoes)
+                {
+                    orientacoesFull.Add(new OrientacoesFullModel
+                    {
+                        id = orientacao.id,
+                        ProfessorOrientador = ObterUsuarioLightPorId(orientacao.idProfessorOrientador),
+                        AlunoOrientado = ObterUsuarioLightPorId((int)orientacao.idAlunoOrientado!),
+                        Projeto = ObterProjetoPorId(orientacao.idProjeto),
+                        Turma = ObterTurmaPorId(orientacao.idTurma),
+                        Banca = ObterBancaPorIdAluno(orientacao.idAlunoOrientado),
+                        statusAprovacao = orientacao.statusAprovacao,
+                        anexoResumoTrabalho = orientacao?.anexoResumoTrabalho,
+                        anexoTAO = orientacao?.anexoTAO,
+                        localDivulgacao = orientacao?.localDivulgacao
+                    });
+                }
+
+                return Ok(orientacoesFull);
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
+        [HttpGet]
+        [Route("ObterOrientacaoProfessorPorId")]
+        public async Task<IActionResult> ObterOrientacaoProfessorPorId(int orientacaoId)
+        {
+            try
+            {
+                AuthModel authModel;
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+
+                var orientacao = await _orientacoesApp.FindByAsync(x => x.idProfessorOrientador == authModel.id && x.id == orientacaoId);
+
+                if (orientacao == null)
+                {
+                    return NoContent();
+                }
+
+                OrientacoesFullModel orientacoesFull = new OrientacoesFullModel();
+
+                orientacoesFull.id = orientacao.id;
+                orientacoesFull.ProfessorOrientador = ObterUsuarioLightPorId(orientacao.idProfessorOrientador);
+                orientacoesFull.AlunoOrientado = ObterUsuarioLightPorId((int)orientacao.idAlunoOrientado!);
+                orientacoesFull.Projeto = ObterProjetoPorId(orientacao.idProjeto);
+                orientacoesFull.Turma = ObterTurmaPorId(orientacao.idTurma);
+                orientacoesFull.Banca = ObterBancaPorIdAluno(orientacao.idAlunoOrientado);
+                orientacoesFull.statusAprovacao = orientacao.statusAprovacao;
+                orientacoesFull.anexoResumoTrabalho = orientacao?.anexoResumoTrabalho;
+                orientacoesFull.anexoTAO = orientacao?.anexoTAO;
+                
+
+                return Ok(orientacoesFull);
             }
             catch (Exception er)
             {
@@ -166,6 +263,81 @@ namespace WebAPI.Controllers
                 return BadRequest("Erro Inesperado:" + er.Message);
             }
         }
+        [HttpPut]
+        [Route("AtualizarInformacoesPOC1")]
+        public async Task<IActionResult> AtualizarInformacoesPOC1(int orientacaoId, int status, string anexoTao)
+        {
+            try
+            {
+                AuthModel authModel;
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+
+                var orientacao = await _orientacoesApp.FindByAsync(x => x.idProfessorOrientador == authModel.id && x.id == orientacaoId);
+
+                if (orientacao is null)
+                {
+                    NoContent();
+                }
+
+                orientacao.statusAprovacao = (Entities.Enumerations.StatusAprovacao)status;
+                orientacao.anexoTAO = anexoTao;
+
+                _orientacoesApp.Update(orientacao);
+                await _baseApp.SaveChangesAsync();
+
+                return Ok(orientacao);
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
+        [HttpPut]
+        [Route("AtualizarInformacoesPOC2")]
+        public async Task<IActionResult> AtualizarInformacoesPOC2(int orientacaoId, int status, string anexoResumoTrabalho, string localDivulgacao)
+        {
+            try
+            {
+                AuthModel authModel;
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+
+                var orientacao = await _orientacoesApp.FindByAsync(x => x.idProfessorOrientador == authModel.id && x.id == orientacaoId);
+
+                if (orientacao is null)
+                {
+                    NoContent();
+                }
+
+                orientacao.statusAprovacao = (Entities.Enumerations.StatusAprovacao)status;
+                orientacao.anexoResumoTrabalho = anexoResumoTrabalho;
+                orientacao.localDivulgacao = localDivulgacao;
+
+                _orientacoesApp.Update(orientacao);
+                await _baseApp.SaveChangesAsync();
+
+                return Ok(orientacao);
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
         private UsuariosLightModel ObterUsuarioLightPorId(int idUsuario)
         {
             var usuario = _usuariosApp.Find(idUsuario);
@@ -201,6 +373,18 @@ namespace WebAPI.Controllers
             var turmaModel = _mapper.Map<TurmasModel>(turma);
 
             return turmaModel;
+        }
+        private BancasModel ObterBancaPorIdAluno(int idAlunoOrientado)
+        {
+            var banca = _bancasApp.Find(idAlunoOrientado);
+
+            if (banca == null)
+            {
+                return null;
+            }
+            var bancaModel = _mapper.Map<BancasModel>(banca);
+
+            return bancaModel;
         }
     }
 }

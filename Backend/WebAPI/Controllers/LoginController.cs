@@ -99,6 +99,7 @@ namespace WebAPI.Controllers
                     return BadRequest("Usuário não foi pré-cadastrado");
                 }
                 usuarios.tipoUsuario = preRegistro.tipoUsuario;
+                usuarios.matricula = preRegistro.matricula;
 
                 await _usuariosApp.Add(usuarios);
 

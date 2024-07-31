@@ -17,6 +17,7 @@ namespace Entities.Entity
         public int idTurma { get; set; }
         public StatusAprovacao statusAprovacao { get; set; }
         public string? anexoResumoTrabalho { get; set; }
+        public string? anexoTAO { get; set; }
         public string? localDivulgacao { get; set; }
     }
 }

@@ -12,5 +12,6 @@ namespace Entities.Entity
         public string descricao { get; set; }
         public int idProfessorResponsavel { get; set; }
         public int? idAlunoResponsavel { get; set; }
+        public string area { get; set; }
     }
 }

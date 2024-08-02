@@ -12,7 +12,6 @@ namespace Application.Models
     {
         public int idProfessorOrientador { get; set; }
         public int idAlunoOrientado { get; set; }
-
         public int idProjeto { get; set; }
         public int idTurma { get; set; }
         public StatusAprovacao statusAprovacao { get; set; }
@@ -25,7 +24,6 @@ namespace Application.Models
     {
         public UsuariosLightModel ProfessorOrientador { get; set; }
         public UsuariosLightModel AlunoOrientado { get; set; }
-
         public ProjetosModel Projeto { get; set; }
         public TurmasModel Turma { get; set; }
         public BancasModel? Banca { get; set; }

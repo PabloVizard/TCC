@@ -25,6 +25,7 @@ namespace Application.Models
         public string nomeCompleto { get; set; }
         public string email { get; set; }
         public TipoUsuario tipoUsuario { get; set; }
+        public int matricula { get; set; }
     }
 
 }

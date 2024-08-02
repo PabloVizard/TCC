@@ -55,5 +55,52 @@ namespace WebAPI.Controllers
                 return BadRequest("Erro Inesperado:" + er.Message);
             }
         }
+
+        [HttpGet]
+        [Route("ObterProfessores")]
+        public async Task<IActionResult> ObterProfessores()
+        {
+            try
+            {
+                AuthModel authModel;
+                
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+
+                var usuarios = await _usuariosApp.ListAsync(x => x.tipoUsuario == Entities.Enumerations.TipoUsuario.Orientador || x.tipoUsuario == Entities.Enumerations.TipoUsuario.ProfessorOrientador);
+
+                if (usuarios == null)
+                {
+                    return NoContent();
+                }
+                List<UsuariosLightModel> retorno = new List<UsuariosLightModel>();
+
+                foreach (var usuario in usuarios)
+                {
+                    UsuariosLightModel usuariosLightModel = new UsuariosLightModel
+                    {
+                        id = usuario.id,
+                        email = usuario.email,
+                        nomeCompleto = usuario.nomeCompleto,
+                        tipoUsuario = usuario.tipoUsuario,
+                        matricula = usuario.matricula
+                    };
+                    retorno.Add(usuariosLightModel);
+                }
+
+                return Ok(retorno);
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
     }
 }

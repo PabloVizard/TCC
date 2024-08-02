@@ -139,6 +139,51 @@ namespace WebAPI.Controllers
                 return BadRequest("Erro Inesperado:" + er.Message);
             }
         }
+        [HttpGet]
+        [Route("ObterAulaPorId")]
+        public async Task<IActionResult> ObterAulaPorId(int aulaId)
+        {
+            try
+            {
+                AuthModel authModel;
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+
+                var aula = await _aulasApp.FindByAsync(x => x.id == aulaId);
+
+                if (aula == null)
+                {
+                    return NoContent();
+                }
+
+                AulasFullModel aulasFullModel = new AulasFullModel
+                {
+
+                    id = aula.id,
+                    professor = ObterUsuarioLightPorId(aula.idProfessor),
+                    turma = ObterTurmaPorId(aula.idTurma),
+                    dataAula = aula.dataAula,
+                    descricao = aula.descricao,
+                    local = aula.local,
+                    link = aula.link,
+                };
+
+
+                return Ok(aulasFullModel);
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
+
         private UsuariosLightModel ObterUsuarioLightPorId(int idUsuario)
         {
             var usuario = _usuariosApp.Find(idUsuario);

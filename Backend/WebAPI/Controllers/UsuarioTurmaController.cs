@@ -139,5 +139,88 @@ namespace WebAPI.Controllers
                 return BadRequest("Erro Inesperado:" + er.Message);
             }
         }
+        [HttpGet]
+        [Route("ObterTurmasProfessor")]
+        public async Task<IActionResult> ObterTurmasProfessor()
+        {
+            try
+            {
+                AuthModel authModel;
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+
+                var turma = await _turmasApp.ListAsync(x => x.ativo);
+
+                if (turma == null)
+                {
+                    return NoContent();
+                }
+
+
+                return Ok(turma);
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("ObterTurmaAluno")]
+        public async Task<IActionResult> ObterTurmaAluno()
+        {
+            try
+            {
+                AuthModel authModel;
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+
+                var turmaUsuario = await _usuarioTurmaApp.FindByAsync(x => x.idUsuario == authModel.id);
+
+                if (turmaUsuario == null)
+                {
+                    return NoContent();
+                }
+
+                var turma = await _turmasApp.FindByAsync(x => x.id == turmaUsuario.idTurma);
+
+                if (turma == null)
+                {
+                    return NoContent();
+                }
+
+
+                return Ok(turma);
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
+        private UsuariosLightModel ObterUsuarioLightPorId(int idUsuario)
+        {
+            var usuario = _usuarioApp.Find(idUsuario);
+
+            if (usuario == null)
+            {
+                return null;
+            }
+
+            return new UsuariosLightModel { id = usuario.id, nomeCompleto = usuario.nomeCompleto, email = usuario.email, tipoUsuario = usuario.tipoUsuario };
+        }
     }
 }

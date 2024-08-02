@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace Application.Applications
 {
-    public class CompromissosApp : BaseApp<Compromissos, CompromissosModel>, ICompromissosApp
+    public class AulasApp : BaseApp<Aulas, AulasModel>, IAulasApp
     {
-        protected readonly ICompromissosService _compromissosService;
+        protected readonly IAulasService _aulasService;
         protected readonly IMapper _mapper;
 
-        public CompromissosApp(ICompromissosService compromissosService, IMapper mapper) : base(compromissosService, mapper)
+        public AulasApp(IAulasService aulasService, IMapper mapper) : base(aulasService, mapper)
         {
-            _compromissosService = compromissosService;
+            _aulasService = aulasService;
             _mapper = mapper;
         }
     }

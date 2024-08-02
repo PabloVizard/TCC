@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Configurations
 {
-    public class CompromissosConfiguration : IEntityTypeConfiguration<Compromissos>
+    public class AulasConfiguration : IEntityTypeConfiguration<Aulas>
     {
-        public void Configure(EntityTypeBuilder<Compromissos> builder)
+        public void Configure(EntityTypeBuilder<Aulas> builder)
         {
-            builder.ToTable("Compromissos");
+            builder.ToTable("Aulas");
 
             builder.HasKey(u => u.id);
             builder.Property(u => u.id).ValueGeneratedOnAdd();

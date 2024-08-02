@@ -24,8 +24,8 @@ namespace Infrastructure.Context
         public DbSet<Tarefas> tarefas { get; set; }
         public DbSet<TarefaAluno> tarefaaluno { get; set; }
         public DbSet<Projetos> projetos { get; set; }
-        public DbSet<Compromissos> compromissos { get; set; }
-        public DbSet<Compromissos> bancas { get; set; }
+        public DbSet<Aulas> aulas { get; set; }
+        public DbSet<Bancas> bancas { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -48,7 +48,7 @@ namespace Infrastructure.Context
             modelBuilder.ApplyConfiguration(new TarefasConfiguration());
             modelBuilder.ApplyConfiguration(new TarefaAlunoConfiguration());
             modelBuilder.ApplyConfiguration(new ProjetosConfiguration());
-            modelBuilder.ApplyConfiguration(new CompromissosConfiguration());
+            modelBuilder.ApplyConfiguration(new AulasConfiguration());
             modelBuilder.ApplyConfiguration(new BancasConfiguration());
         }
     }

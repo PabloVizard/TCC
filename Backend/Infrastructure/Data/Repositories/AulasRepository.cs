@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data.Repositories
 {
-    public class CompromissosRepository : BaseRepository<Compromissos>, ICompromissosRepository
+    public class AulasRepository : BaseRepository<Aulas>, IAulasRepository
     {
-        public CompromissosRepository(DataContext dataContext) : base(dataContext) { }
+        public AulasRepository(DataContext dataContext) : base(dataContext) { }
     }
 }

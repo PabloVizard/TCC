@@ -21,7 +21,7 @@ namespace Application.Mappings
             CreateMap<Tarefas, TarefasModel>().ReverseMap();
             CreateMap<TarefaAluno, TarefaAlunoModel>().ReverseMap();
             CreateMap<Projetos, ProjetosModel>().ReverseMap();
-            CreateMap<Compromissos, CompromissosModel>().ReverseMap();
+            CreateMap<Aulas, AulasModel>().ReverseMap();
             CreateMap<Bancas, BancasModel>().ReverseMap();
         }
     }

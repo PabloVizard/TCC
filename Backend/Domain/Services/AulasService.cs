@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace Domain.Services
 {
-    public class CompromissosService : BaseService<Compromissos>, ICompromissosService
+    public class AulasService : BaseService<Aulas>, IAulasService
     {
-        private readonly ICompromissosRepository _compromissosRepository;
+        private readonly IAulasRepository _aulasRepository;
         private readonly IMapper _mapper;
-        public CompromissosService(ICompromissosRepository compromissosRepository, IMapper mapper) : base(compromissosRepository, mapper)
+        public AulasService(IAulasRepository aulasRepository, IMapper mapper) : base(aulasRepository, mapper)
         {
-            _compromissosRepository = compromissosRepository;
+            _aulasRepository = aulasRepository;
             _mapper = mapper;
         }
     }

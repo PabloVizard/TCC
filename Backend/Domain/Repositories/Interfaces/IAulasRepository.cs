@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Services.Interfaces
+namespace Domain.Repositories.Interfaces
 {
-    public interface ICompromissosService : IBaseService<Compromissos>
+    public interface IAulasRepository : IBaseRepository<Aulas>
     {
     }
 }

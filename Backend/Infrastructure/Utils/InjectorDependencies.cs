@@ -28,7 +28,7 @@ namespace Infrastructure.Utils
             services.AddScoped<ITarefasApp, TarefasApp>();
             services.AddScoped<ITarefaAlunoApp, TarefaAlunoApp>();
             services.AddScoped<IProjetosApp, ProjetosApp>();
-            services.AddScoped<ICompromissosApp, CompromissosApp>();
+            services.AddScoped<IAulasApp, AulasApp>();
             services.AddScoped<IBancasApp, BancasApp>();
 
             #endregion
@@ -44,7 +44,7 @@ namespace Infrastructure.Utils
             services.AddScoped<ITarefasService, TarefasService>();
             services.AddScoped<ITarefaAlunoService, TarefaAlunoService>();
             services.AddScoped<IProjetosService, ProjetosService>();
-            services.AddScoped<ICompromissosService, CompromissosService>();
+            services.AddScoped<IAulasService, AulasService>();
             services.AddScoped<IBancasService, BancasService>();
 
             #endregion
@@ -60,7 +60,7 @@ namespace Infrastructure.Utils
             services.AddScoped<ITarefasRepository, TarefasRepository>();
             services.AddScoped<ITarefaAlunoRepository, TarefaAlunoRepository>();
             services.AddScoped<IProjetosRepository, ProjetosRepository>();
-            services.AddScoped<ICompromissosRepository, CompromissosRepository>();
+            services.AddScoped<IAulasRepository, AulasRepository>();
             services.AddScoped<IBancasRepository, BancasRepository>();
 
             #endregion

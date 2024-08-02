@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Applications.Interfaces
 {
-    public interface ICompromissosApp : IBaseApp<Compromissos, CompromissosModel>
+    public interface IAulasApp : IBaseApp<Aulas, AulasModel>
     {
     }
 }

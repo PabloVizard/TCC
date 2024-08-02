@@ -13,6 +13,7 @@ namespace Entities.Entity
         public int ano { get; set; }
         public int semestre { get; set; }
         public int nPoc { get; set; }
+        public bool ativo { get; set; }
 
     }
 }

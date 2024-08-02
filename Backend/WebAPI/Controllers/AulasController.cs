@@ -1,4 +1,5 @@
-﻿using Application.Applications.Interfaces;
+﻿using Application.Applications;
+using Application.Applications.Interfaces;
 using Application.Models;
 using AutoMapper;
 using Entities.Entity;
@@ -16,17 +17,19 @@ namespace WebAPI.Controllers
         private readonly IUsuariosApp _usuariosApp;
         private readonly ITurmasApp _turmasApp;
         private readonly IMapper _mapper;
-        public AulasController(IAulasApp aulas, IUsuariosApp usuariosApp, ITurmasApp turmasApp, IMapper mapper) : base(aulas)
+        private readonly IUsuarioTurmaApp _usuarioTurmaApp;
+        public AulasController(IAulasApp aulas, IUsuariosApp usuariosApp, ITurmasApp turmasApp, IMapper mapper, IUsuarioTurmaApp usuarioTurmaApp) : base(aulas)
         {
             _aulasApp = aulas;
             _usuariosApp = usuariosApp;
             _turmasApp = turmasApp;
+            _usuarioTurmaApp = usuarioTurmaApp;
             _mapper = mapper;
         }
 
         [HttpGet]
         [Route("ObterAulasAluno")]
-        public async Task<IActionResult> ObterAulasAluno(int turmaId)
+        public async Task<IActionResult> ObterAulasAluno()
         {
             try
             {
@@ -41,7 +44,21 @@ namespace WebAPI.Controllers
                     return Unauthorized("Erro ao obter token:" + ex.Message);
                 }
 
-                var aulas = await _aulasApp.ListAsync(x => x.idTurma == turmaId);
+                var turmaAluno = await _usuarioTurmaApp.FindByAsync(x => x.idUsuario == authModel.id);
+
+                if (turmaAluno == null)
+                {
+                    return NoContent();
+                }
+
+                var turma = await _turmasApp.FindByAsync(x => x.id == turmaAluno.idTurma && x.ativo);
+
+                if(turma == null)
+                {
+                    return NoContent();
+                }
+
+                var aulas = await _aulasApp.ListAsync(x => x.idTurma == turma.id);
 
                 if (aulas == null)
                 {

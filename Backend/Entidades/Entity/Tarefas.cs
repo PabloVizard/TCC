@@ -10,6 +10,7 @@ namespace Entities.Entity
     {
         public string descricao { get; set; }
         public int idTurma { get; set; }
+        public int idProfessor { get; set; }
         public DateTime dataLimite { get; set; }
         public string? anexo { get; set; }
 

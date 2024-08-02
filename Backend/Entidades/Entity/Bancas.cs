@@ -8,6 +8,7 @@ namespace Entities.Entity
 {
     public class Bancas : BaseEntity
     {
+        public int idProjeto { get; set; }
         public int idProfessorOrientador { get; set; }
         public int idAlunoOrientado { get; set; }
         public int idAvaliador01 { get; set; }

@@ -13,9 +13,11 @@ namespace WebAPI.Controllers
     public class TarefaAlunoController : BaseController<TarefaAluno, TarefaAlunoModel>
     {
         private readonly ITarefaAlunoApp _tarefaAlunoApp;
-        public TarefaAlunoController(ITarefaAlunoApp tarefaAlunoApp) : base(tarefaAlunoApp)
+        private readonly IUsuariosApp _usuariosApp;
+        public TarefaAlunoController(ITarefaAlunoApp tarefaAlunoApp, IUsuariosApp usuariosApp) : base(tarefaAlunoApp)
         {
             _tarefaAlunoApp = tarefaAlunoApp;
+            _usuariosApp = usuariosApp;
         }
 
         [HttpGet]
@@ -50,5 +52,6 @@ namespace WebAPI.Controllers
                 return BadRequest("Erro Inesperado:" + er.Message);
             }
         }
+
     }
 }

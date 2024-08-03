@@ -74,7 +74,7 @@ namespace WebAPI.Controllers
                         {
                             id = aula.id,
                             professor = _usuariosApp.ObterUsuarioLightPorId(aula.idProfessor),
-                            turma = ObterTurmaPorId(aula.idTurma),
+                            turma = _turmasApp.ObterTurmaPorId(aula.idTurma),
                             dataAula = aula.dataAula,
                             descricao = aula.descricao,
                             local = aula.local,
@@ -123,7 +123,7 @@ namespace WebAPI.Controllers
                         {
                             id = aula.id,
                             professor = _usuariosApp.ObterUsuarioLightPorId(aula.idProfessor),
-                            turma = ObterTurmaPorId(aula.idTurma),
+                            turma = _turmasApp.ObterTurmaPorId(aula.idTurma),
                             dataAula = aula.dataAula,
                             descricao = aula.descricao,
                             local = aula.local,
@@ -168,7 +168,7 @@ namespace WebAPI.Controllers
 
                     id = aula.id,
                     professor = _usuariosApp.ObterUsuarioLightPorId(aula.idProfessor),
-                    turma = ObterTurmaPorId(aula.idTurma),
+                    turma = _turmasApp.ObterTurmaPorId(aula.idTurma),
                     dataAula = aula.dataAula,
                     descricao = aula.descricao,
                     local = aula.local,
@@ -182,18 +182,6 @@ namespace WebAPI.Controllers
             {
                 return BadRequest("Erro Inesperado:" + er.Message);
             }
-        }
-        private TurmasModel ObterTurmaPorId(int idTurma)
-        {
-            var turma = _turmasApp.Find(idTurma);
-
-            if (turma == null)
-            {
-                return null;
-            }
-            var turmaModel = _mapper.Map<TurmasModel>(turma);
-
-            return turmaModel;
         }
     }
 }

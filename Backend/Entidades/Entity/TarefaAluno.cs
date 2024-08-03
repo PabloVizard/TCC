@@ -10,8 +10,8 @@ namespace Entities.Entity
     {
         public int idAluno { get; set; }
         public int idTarefa { get; set; }
-        public string anexo { get; set; }
-        public DateTime dataEntrega { get; set; }
-        public DateTime dataLimite { get; set; }
+        public int idTurma { get; set; }
+        public string? anexo { get; set; }
+        public DateTime? dataEntrega { get; set; }
     }
 }

@@ -36,7 +36,7 @@ namespace Application.Applications
                 return null;
             }
 
-            return new UsuariosLightModel { id = usuario.id, nomeCompleto = usuario.nomeCompleto, email = usuario.email, tipoUsuario = usuario.tipoUsuario };
+            return new UsuariosLightModel { id = usuario.id, nomeCompleto = usuario.nomeCompleto, email = usuario.email, tipoUsuario = usuario.tipoUsuario, matricula = usuario.matricula };
         }
     }
 }

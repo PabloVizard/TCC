@@ -26,6 +26,7 @@ namespace Infrastructure.Context
         public DbSet<Projetos> projetos { get; set; }
         public DbSet<Aulas> aulas { get; set; }
         public DbSet<Bancas> bancas { get; set; }
+        public DbSet<Faltas> faltas { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -50,6 +51,7 @@ namespace Infrastructure.Context
             modelBuilder.ApplyConfiguration(new ProjetosConfiguration());
             modelBuilder.ApplyConfiguration(new AulasConfiguration());
             modelBuilder.ApplyConfiguration(new BancasConfiguration());
+            modelBuilder.ApplyConfiguration(new FaltasConfiguration());
         }
     }
     

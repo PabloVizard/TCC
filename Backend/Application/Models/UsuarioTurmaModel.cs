@@ -16,5 +16,8 @@ namespace Application.Models
     {
         public UsuariosLightModel usuario { get; set; }
         public TurmasModel turma { get; set; }
+        public int quantidadeFaltas { get; set; }
+        public bool faltaAula {  get; set; }
+        public int? idFalta { get; set; }
     }
 }

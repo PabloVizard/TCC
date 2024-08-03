@@ -21,5 +21,17 @@ namespace Application.Applications
             _turmasService = turmasService;
             _mapper = mapper;
         }
+        public TurmasModel ObterTurmaPorId(int idTurma)
+        {
+            var turma = _turmasService.Find(idTurma);
+
+            if (turma == null)
+            {
+                return null;
+            }
+            var turmaModel = _mapper.Map<TurmasModel>(turma);
+
+            return turmaModel;
+        }
     }
 }

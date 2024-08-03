@@ -73,7 +73,7 @@ namespace WebAPI.Controllers
                         new AulasFullModel
                         {
                             id = aula.id,
-                            professor = ObterUsuarioLightPorId(aula.idProfessor),
+                            professor = _usuariosApp.ObterUsuarioLightPorId(aula.idProfessor),
                             turma = ObterTurmaPorId(aula.idTurma),
                             dataAula = aula.dataAula,
                             descricao = aula.descricao,
@@ -122,7 +122,7 @@ namespace WebAPI.Controllers
                         new AulasFullModel
                         {
                             id = aula.id,
-                            professor = ObterUsuarioLightPorId(aula.idProfessor),
+                            professor = _usuariosApp.ObterUsuarioLightPorId(aula.idProfessor),
                             turma = ObterTurmaPorId(aula.idTurma),
                             dataAula = aula.dataAula,
                             descricao = aula.descricao,
@@ -167,7 +167,7 @@ namespace WebAPI.Controllers
                 {
 
                     id = aula.id,
-                    professor = ObterUsuarioLightPorId(aula.idProfessor),
+                    professor = _usuariosApp.ObterUsuarioLightPorId(aula.idProfessor),
                     turma = ObterTurmaPorId(aula.idTurma),
                     dataAula = aula.dataAula,
                     descricao = aula.descricao,
@@ -182,18 +182,6 @@ namespace WebAPI.Controllers
             {
                 return BadRequest("Erro Inesperado:" + er.Message);
             }
-        }
-
-        private UsuariosLightModel ObterUsuarioLightPorId(int idUsuario)
-        {
-            var usuario = _usuariosApp.Find(idUsuario);
-
-            if (usuario == null)
-            {
-                return null;
-            }
-
-            return new UsuariosLightModel { id = usuario.id, nomeCompleto = usuario.nomeCompleto, email = usuario.email, tipoUsuario = usuario.tipoUsuario };
         }
         private TurmasModel ObterTurmaPorId(int idTurma)
         {

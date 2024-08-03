@@ -8,9 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Applications.Interfaces
 {
-    public interface ITurmasApp : IBaseApp<Turmas, TurmasModel>
+    public interface IFaltasApp : IBaseApp<Faltas, FaltasModel>
     {
-        TurmasModel ObterTurmaPorId(int idTurma);
     }
-    
 }

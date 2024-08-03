@@ -15,11 +15,13 @@ namespace WebAPI.Controllers
         private readonly IUsuarioTurmaApp _usuarioTurmaApp;
         private readonly IUsuariosApp _usuarioApp;
         private readonly ITurmasApp _turmasApp;
-        public UsuarioTurmaController(IUsuarioTurmaApp usuarioTurmaApp, IUsuariosApp usuariosApp, ITurmasApp turmasApp) : base(usuarioTurmaApp)
+        private readonly IFaltasApp _faltasApp;
+        public UsuarioTurmaController(IUsuarioTurmaApp usuarioTurmaApp, IUsuariosApp usuariosApp, ITurmasApp turmasApp, IFaltasApp faltasApp) : base(usuarioTurmaApp)
         {
             _usuarioTurmaApp = usuarioTurmaApp;
             _usuarioApp = usuariosApp;
             _turmasApp = turmasApp;
+            _faltasApp = faltasApp;
         }
 
         [HttpGet]
@@ -133,6 +135,52 @@ namespace WebAPI.Controllers
                 }
 
                 return Ok(turma);
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
+        [HttpGet]
+        [Route("ObterAlunosPorTurma")]
+        public async Task<IActionResult> ObterAlunosPorTurma(int turmaId, int aulaId)
+        {
+            try
+            {
+                AuthModel authModel;
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+
+                var usuariosTurma = await _usuarioTurmaApp.ListAsync(x => x.idTurma == turmaId);
+
+                if (usuariosTurma is null)
+                {
+                    return BadRequest("UsuarioTurma não encontrado.");
+                }
+
+                List<UsuarioTurmaFullModel> usuarios = new List<UsuarioTurmaFullModel>();
+
+                foreach (var usuario in usuariosTurma)
+                {
+                    usuarios.Add(new UsuarioTurmaFullModel
+                    {
+                        id = usuario.id,
+                        turma = _turmasApp.ObterTurmaPorId(usuario.idTurma),
+                        usuario = _usuarioApp.ObterUsuarioLightPorId(usuario.idUsuario),
+                        idFalta = _faltasApp.FindBy(x => x.idAula == aulaId && x.idAluno == usuario.idUsuario)?.id,
+                        faltaAula = _faltasApp.Any(x => x.idAula == aulaId && x.idAluno == usuario.idUsuario),
+                        quantidadeFaltas = _faltasApp.List(x => x.idAluno == usuario.idUsuario).Count()
+                    });
+                }
+
+                return Ok(usuarios);
             }
             catch (Exception er)
             {

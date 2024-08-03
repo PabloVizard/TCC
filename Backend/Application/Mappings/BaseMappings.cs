@@ -23,6 +23,7 @@ namespace Application.Mappings
             CreateMap<Projetos, ProjetosModel>().ReverseMap();
             CreateMap<Aulas, AulasModel>().ReverseMap();
             CreateMap<Bancas, BancasModel>().ReverseMap();
+            CreateMap<Faltas, FaltasModel>().ReverseMap();
         }
     }
 }

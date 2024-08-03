@@ -27,5 +27,16 @@ namespace Application.Applications
         {
             _usuariosService.Update(usuarios);
         }
+        public UsuariosLightModel ObterUsuarioLightPorId(int idUsuario)
+        {
+            var usuario = _usuariosService.Find(idUsuario);
+
+            if (usuario == null)
+            {
+                return null;
+            }
+
+            return new UsuariosLightModel { id = usuario.id, nomeCompleto = usuario.nomeCompleto, email = usuario.email, tipoUsuario = usuario.tipoUsuario };
+        }
     }
 }

@@ -10,7 +10,7 @@ namespace Application.Models
     public class TarefasModel : BaseModel
     {
         public string descricao { get; set; }
-        public int idTurma { get; set; }
+        public int idAluno { get; set; }
         public int idProfessor { get; set; }
         public DateTime dataLimite { get; set; }
         public string? anexo { get; set; }
@@ -18,9 +18,11 @@ namespace Application.Models
     public class TarefasFullModel : BaseModel
     {
         public string descricao { get; set; }
-        public TurmasModel turma { get; set; }
+        public UsuariosLightModel aluno { get; set; }
         public UsuariosLightModel professor { get; set; }
         public DateTime dataLimite { get; set; }
         public string? anexo { get; set; }
+        public bool entregue { get; set; }
+        public string? anexoEntrega { get; set; }
     }
 }

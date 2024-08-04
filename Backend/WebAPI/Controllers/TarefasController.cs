@@ -32,39 +32,6 @@ namespace WebAPI.Controllers
             _tarefaAlunoApp = tarefaAlunoApp;
         }
 
-
-        [HttpGet]
-        [Route("ObterPorTurmaId")]
-        public async Task<IActionResult> ObterPorTurmaId(int idTurma)
-        {
-            try
-            {
-                AuthModel authModel;
-
-                try
-                {
-                    authModel = await GetTokenAuthModelAsync();
-                }
-                catch (Exception ex)
-                {
-                    return Unauthorized("Erro ao obter token:" + ex.Message);
-                }
-
-                var tarefasTurma = await _tarefasApp.ListAsync(x => x.idTurma == idTurma);
-
-                if (tarefasTurma is null)
-                {
-                    return BadRequest("UsuarioTurma não encontrado.");
-                }
-
-
-                return Ok(tarefasTurma);
-            }
-            catch (Exception er)
-            {
-                return BadRequest("Erro Inesperado:" + er.Message);
-            }
-        }
         [HttpGet]
         [Route("ObterTarefasProfessor")]
         public async Task<IActionResult> ObterTarefasProfessor()
@@ -99,7 +66,9 @@ namespace WebAPI.Controllers
                         dataLimite = tarefa.dataLimite,
                         descricao = tarefa.descricao,
                         professor = _usuariosApp.ObterUsuarioLightPorId(tarefa.idProfessor),
-                        turma = _turmasApp.ObterTurmaPorId(tarefa.idTurma)
+                        aluno = _usuariosApp.ObterUsuarioLightPorId(tarefa.idAluno),
+                        entregue = _tarefaAlunoApp.Any(x => x.idAluno == tarefa.idAluno && !string.IsNullOrEmpty(x.anexo) && x.idTarefa == tarefa.id),
+                        anexoEntrega = _tarefaAlunoApp.FindBy(x => x.idAluno == tarefa.idAluno && x.idTarefa == tarefa.id)?.anexo
                     });
                 }
 
@@ -144,7 +113,7 @@ namespace WebAPI.Controllers
                     dataLimite = tarefaTurma.dataLimite,
                     descricao = tarefaTurma.descricao,
                     professor = _usuariosApp.ObterUsuarioLightPorId(tarefaTurma.idProfessor),
-                    turma = _turmasApp.ObterTurmaPorId(tarefaTurma.idTurma)
+                    aluno = _usuariosApp.ObterUsuarioLightPorId(tarefaTurma.idAluno)
                 };
 
 
@@ -173,7 +142,15 @@ namespace WebAPI.Controllers
                     return Unauthorized("Erro ao obter token:" + ex.Message);
                 }
 
-                var alunosTarefa = await _tarefaAlunoApp.ListAsync(x => x.idTurma == idTurma && x.idTarefa == idTarefa);
+                var alunosTurma = await _usuariosTurmaApp.ListAsync(x => x.idTurma == idTurma);
+
+                if (alunosTurma == null || !alunosTurma.Any())
+                {
+                    return BadRequest("Usuários da turma não encontrados.");
+                }
+
+                var alunoIds = alunosTurma.Select(x => x.idUsuario).ToList();
+                var alunosTarefa = await _tarefaAlunoApp.ListAsync(x => x.idTarefa == idTarefa && alunoIds.Contains(x.idAluno));
 
                 if (alunosTarefa is null)
                 {
@@ -188,7 +165,6 @@ namespace WebAPI.Controllers
                     {
                         id = alunoTarefa.id,
                         aluno = _usuariosApp.ObterUsuarioLightPorId(alunoTarefa.idAluno),
-                        turma = _turmasApp.ObterTurmaPorId(alunoTarefa.idTurma),
                         tarefa = _tarefasApp.FindBy(x => x.id == alunoTarefa.idTarefa),
                         anexo = alunoTarefa?.anexo,
                         dataEntrega = alunoTarefa?.dataEntrega
@@ -215,26 +191,18 @@ namespace WebAPI.Controllers
                 if (dataEntity != null)
                 {
 
-                    var alunosTurma = await _usuariosTurmaApp.ListAsync(x => x.idTurma ==  tarefa.idTurma);
+                    var aluno = await _usuariosApp.FindByAsync(x => x.id ==  tarefa.idAluno);
 
-                    List<TarefaAluno> alunosTarefaAdicionar = new List<TarefaAluno>();
+                    TarefaAluno alunoTarefaAdicionar = new TarefaAluno();
 
-                    foreach (var aluno in alunosTurma)
+                    TarefaAlunoModel tarefaAluno = new TarefaAlunoModel
                     {
-                        TarefaAluno tarefaAluno = new TarefaAluno
-                        {
-                            idAluno = aluno.idUsuario,
-                            idTarefa = dataEntity.Entity.id,
-                            idTurma = aluno.idTurma,
-                        };
-                        alunosTarefaAdicionar.Add(tarefaAluno);
-                    }
-                    
-                    if(alunosTarefaAdicionar.Count > 0)
-                    {
-                        _tarefaAlunoApp.AddRange(alunosTarefaAdicionar);
-                        await _tarefaAlunoApp.SaveChangesAsync();
-                    }
+                        idAluno = aluno.id,
+                        idTarefa = dataEntity.Entity.id,
+                    };
+
+                    await _tarefaAlunoApp.Add(tarefaAluno);
+                    await _tarefaAlunoApp.SaveChangesAsync();
                 }
 
                 return Ok(dataEntity.Entity);

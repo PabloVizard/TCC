@@ -11,7 +11,6 @@ namespace Application.Models
     {
         public int idAluno { get; set; }
         public int idTarefa { get; set; }
-        public int idTurma { get; set; }
         public string? anexo { get; set; }
         public DateTime? dataEntrega { get; set; }
     }
@@ -19,7 +18,6 @@ namespace Application.Models
     {
         public UsuariosLightModel aluno { get; set; }
         public Tarefas tarefa { get; set; }
-        public TurmasModel turma { get; set; }
         public string? anexo { get; set; }
         public DateTime? dataEntrega { get; set; }
     }

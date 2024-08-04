@@ -230,19 +230,27 @@ namespace WebAPI.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                    return Unauthorized("Erro ao obter token: " + ex.Message);
                 }
 
                 var alunos = await _usuariosApp.ListAsync(x => x.tipoUsuario == Entities.Enumerations.TipoUsuario.Aluno);
 
-                if (alunos is null)
+                if (alunos is null || !alunos.Any())
                 {
-                    NoContent();
+                    return NoContent();
                 }
 
-                var orientacao = await _orientacoesApp.ListAsync();
+                var orientacoes = await _orientacoesApp.ListAsync(x => x.idProfessorOrientador == authModel.id);
 
-                List<UsuariosLightModel> alunosDisponiveis = alunos
+                if (orientacoes is null || !orientacoes.Any())
+                {
+                    return NoContent();
+                }
+
+                var orientadosIds = orientacoes.Select(o => o.idAlunoOrientado).ToList();
+                var alunosOrientados = alunos.Where(aluno => orientadosIds.Contains(aluno.id)).ToList();
+
+                List<UsuariosLightModel> alunosDisponiveis = alunosOrientados
                     .Select(aluno => new UsuariosLightModel
                     {
                         nomeCompleto = aluno.nomeCompleto,
@@ -251,18 +259,19 @@ namespace WebAPI.Controllers
                         tipoUsuario = aluno.tipoUsuario
                     }).ToList();
 
-                if (alunosDisponiveis is null)
+                if (alunosDisponiveis is null || !alunosDisponiveis.Any())
                 {
-                    NoContent();
+                    return NoContent();
                 }
 
                 return Ok(alunosDisponiveis);
             }
             catch (Exception er)
             {
-                return BadRequest("Erro Inesperado:" + er.Message);
+                return BadRequest("Erro Inesperado: " + er.Message);
             }
         }
+
         [HttpPut]
         [Route("AtualizarInformacoesPOC1")]
         public async Task<IActionResult> AtualizarInformacoesPOC1(int orientacaoId, int status, string anexoTao)

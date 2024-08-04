@@ -220,23 +220,31 @@ namespace WebAPI.Controllers
                     return BadRequest("Dados não existente");
                 }
 
+                // Obter todas as propriedades de 'projetos' e 'projetosFind'
                 var dadosProperties = projetos.GetType().GetProperties();
                 var dadosFindProperties = projetosFind.GetType().GetProperties();
 
+                // Mapear as propriedades e seus valores para um dicionário
+                var propertyValueMap = new Dictionary<string, object>();
                 foreach (var property in dadosProperties)
                 {
-                    var findProperty = dadosFindProperties.FirstOrDefault(p => p.Name == property.Name);
-                    if (findProperty != null && property.GetValue(projetos) != null)
+                    propertyValueMap[property.Name] = property.GetValue(projetos);
+                }
+
+                // Iterar sobre as propriedades do objeto encontrado e definir os valores
+                foreach (var property in dadosFindProperties)
+                {
+                    if (propertyValueMap.ContainsKey(property.Name))
                     {
-                        findProperty.SetValue(projetosFind, property.GetValue(projetos));
+                        property.SetValue(projetosFind, propertyValueMap[property.Name]);
                     }
                 }
 
                 _projetosApp.Update(projetosFind);
                 await _projetosApp.SaveChangesAsync();
 
-                var orientacoesFind = await _orientacoesApp.FindByAsync(x => x.idProjeto ==  projetos.id);
-                if(orientacoesFind != null)
+                var orientacoesFind = await _orientacoesApp.FindByAsync(x => x.idProjeto == projetos.id);
+                if (orientacoesFind != null)
                 {
                     if (projetos.idAlunoResponsavel != null)
                     {
@@ -261,10 +269,9 @@ namespace WebAPI.Controllers
                 }
 
                 return BadRequest("Erro Inesperado");
-
             }
-
         }
+
         [HttpPost]
         [Route("Registrar")]
         public override async Task<IActionResult> Registrar(ProjetosModel dados)

@@ -95,15 +95,23 @@ namespace WebAPI.Controllers
                     return BadRequest("Dados não existente");
                 }
 
+                // Obter todas as propriedades de 'dados' e 'dadosFind'
                 var dadosProperties = dados.GetType().GetProperties();
                 var dadosFindProperties = dadosFind.GetType().GetProperties();
 
+                // Mapear as propriedades e seus valores para um dicionário
+                var propertyValueMap = new Dictionary<string, object>();
                 foreach (var property in dadosProperties)
                 {
-                    var findProperty = dadosFindProperties.FirstOrDefault(p => p.Name == property.Name);
-                    if (findProperty != null && property.GetValue(dados) != null)
+                    propertyValueMap[property.Name] = property.GetValue(dados);
+                }
+
+                // Iterar sobre as propriedades do objeto encontrado e definir os valores
+                foreach (var property in dadosFindProperties)
+                {
+                    if (propertyValueMap.ContainsKey(property.Name))
                     {
-                        findProperty.SetValue(dadosFind, property.GetValue(dados));
+                        property.SetValue(dadosFind, propertyValueMap[property.Name]);
                     }
                 }
 
@@ -120,10 +128,9 @@ namespace WebAPI.Controllers
                 }
 
                 return BadRequest("Erro Inesperado");
-
             }
-            
         }
+
         [HttpPost]
         [Route("Registrar")]
         public virtual async Task<IActionResult> Registrar(Model dados)

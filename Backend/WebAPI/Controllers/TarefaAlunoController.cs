@@ -52,6 +52,36 @@ namespace WebAPI.Controllers
                 return BadRequest("Erro Inesperado:" + er.Message);
             }
         }
+        [HttpGet]
+        [Route("ObterTarefaAluno")]
+        public async Task<IActionResult> ObterTarefaAluno(int tarefaId)
+        {
+            try
+            {
+                AuthModel authModel;
 
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+
+                var tarefaAluno = await _tarefaAlunoApp.FindByAsync(x => x.idTarefa == tarefaId);
+
+                if (tarefaAluno is null)
+                {
+                    return BadRequest("Usuario Tarefa não encontrado.");
+                }
+
+                return Ok(tarefaAluno);
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
     }
 }

@@ -18,13 +18,15 @@ namespace WebAPI.Controllers
         private readonly ITurmasApp _turmasApp;
         private readonly IMapper _mapper;
         private readonly IUsuarioTurmaApp _usuarioTurmaApp;
-        public AulasController(IAulasApp aulas, IUsuariosApp usuariosApp, ITurmasApp turmasApp, IMapper mapper, IUsuarioTurmaApp usuarioTurmaApp) : base(aulas)
+        private readonly IFaltasApp _faltasApp;
+        public AulasController(IAulasApp aulas, IUsuariosApp usuariosApp, ITurmasApp turmasApp, IMapper mapper, IUsuarioTurmaApp usuarioTurmaApp, IFaltasApp faltasApp) : base(aulas)
         {
             _aulasApp = aulas;
             _usuariosApp = usuariosApp;
             _turmasApp = turmasApp;
             _usuarioTurmaApp = usuarioTurmaApp;
             _mapper = mapper;
+            _faltasApp = faltasApp;
         }
 
         [HttpGet]
@@ -65,12 +67,12 @@ namespace WebAPI.Controllers
                     return NoContent();
                 }
 
-                List<AulasFullModel> aulasFullModel = new List<AulasFullModel>();
+                List<AulasAlunoFullModel> aulasFullModel = new List<AulasAlunoFullModel>();
 
                 foreach (var aula in aulas)
                 {
                     aulasFullModel.Add(
-                        new AulasFullModel
+                        new AulasAlunoFullModel
                         {
                             id = aula.id,
                             professor = _usuariosApp.ObterUsuarioLightPorId(aula.idProfessor),
@@ -79,11 +81,58 @@ namespace WebAPI.Controllers
                             descricao = aula.descricao,
                             local = aula.local,
                             link = aula.link,
+                            falta = _faltasApp.Any(x => x.idAluno == authModel.id && x.idAula == aula.id)
                         });
                 }
                 
 
                 return Ok(aulasFullModel);
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
+        [HttpGet]
+        [Route("ObterFaltasAluno")]
+        public async Task<IActionResult> ObterFaltasAluno()
+        {
+            try
+            {
+                AuthModel authModel;
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+
+                var faltas = await _faltasApp.ListAsync(x => x.idAluno == authModel.id);
+
+                if (faltas == null)
+                {
+                    return NoContent();
+                }
+
+                List<FaltasFullModel> faltasFullModel = new List<FaltasFullModel>();
+
+                foreach (var falta in faltas)
+                {
+                    faltasFullModel.Add(
+                        new FaltasFullModel
+                        {
+                            id = falta.id,
+                            aluno = _usuariosApp.ObterUsuarioLightPorId(falta.idAluno),
+                            aula = _aulasApp.FindBy( x => x.id == falta.idAula),
+                            turma = _turmasApp.ObterTurmaPorId(falta.idTurma)
+                        });
+                }
+
+
+                return Ok(faltasFullModel);
             }
             catch (Exception er)
             {

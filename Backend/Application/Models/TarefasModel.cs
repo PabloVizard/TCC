@@ -25,4 +25,14 @@ namespace Application.Models
         public bool entregue { get; set; }
         public string? anexoEntrega { get; set; }
     }
+    public class TarefasAlunoFullModel : BaseModel
+    {
+        public string descricao { get; set; }
+        public UsuariosLightModel aluno { get; set; }
+        public UsuariosLightModel professor { get; set; }
+        public DateTime dataLimite { get; set; }
+        public DateTime? dataEntrega { get; set; }  
+        public string? anexo { get; set; }
+        public string? anexoEntrega { get; set; }
+    }
 }

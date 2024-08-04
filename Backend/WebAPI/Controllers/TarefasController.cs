@@ -82,6 +82,55 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
+        [Route("ObterTarefasAluno")]
+        public async Task<IActionResult> ObterTarefasAluno()
+        {
+            try
+            {
+                AuthModel authModel;
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+
+                var tarefasAluno = await _tarefasApp.ListAsync(x => x.idAluno == authModel.id);
+
+                if (tarefasAluno is null)
+                {
+                    return BadRequest("UsuarioTurma não encontrado.");
+                }
+
+                List<TarefasAlunoFullModel> tarefasFull = new List<TarefasAlunoFullModel>();
+                foreach (var tarefa in tarefasAluno)
+                {
+                    tarefasFull.Add(new TarefasAlunoFullModel
+                    {
+                        id = tarefa.id,
+                        anexo = tarefa.anexo,
+                        dataLimite = tarefa.dataLimite,
+                        descricao = tarefa.descricao,
+                        professor = _usuariosApp.ObterUsuarioLightPorId(tarefa.idProfessor),
+                        aluno = _usuariosApp.ObterUsuarioLightPorId(tarefa.idAluno),
+                        dataEntrega = _tarefaAlunoApp.FindBy(x => x.idAluno == tarefa.idAluno && x.idTarefa == tarefa.id)?.dataEntrega,
+                        anexoEntrega = _tarefaAlunoApp.FindBy(x => x.idAluno == tarefa.idAluno && x.idTarefa == tarefa.id)?.anexo
+                    });
+                }
+
+
+                return Ok(tarefasFull);
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
+
+        [HttpGet]
         [Route("ObterTarefaPorId")]
         public async Task<IActionResult> ObterTarefaPorId(int tarefaId)
         {

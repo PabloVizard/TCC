@@ -25,4 +25,14 @@ namespace Application.Models
         public string? local { get; set; }
         public string? link { get; set; }
     }
+    public class AulasAlunoFullModel : BaseModel
+    {
+        public string descricao { get; set; }
+        public UsuariosLightModel professor { get; set; }
+        public TurmasModel turma { get; set; }
+        public DateTime dataAula { get; set; }
+        public string? local { get; set; }
+        public string? link { get; set; }
+        public bool? falta {  get; set; }
+    }
 }

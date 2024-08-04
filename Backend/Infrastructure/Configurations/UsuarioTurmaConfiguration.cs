@@ -18,6 +18,14 @@ namespace Infrastructure.Configurations
             builder.HasKey(u => u.id);
             builder.Property(u => u.id).ValueGeneratedOnAdd();
 
+            builder.Property<int>("idUsuario");
+
+            builder.HasOne<Usuarios>()
+                   .WithMany()
+                   .HasForeignKey("idUsuario")
+                   .IsRequired()
+                   .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

@@ -17,6 +17,7 @@ namespace Application.Models
         public int ano { get; set; }
         public int semestre { get; set; }
         public bool bancaConfirmada { get; set; }
+        public bool? status {  get; set; }
         public DateTime? dataDefesa { get; set; }
     }
     public class BancasFullModel: BaseModel
@@ -29,6 +30,7 @@ namespace Application.Models
         public int ano { get; set; }
         public int semestre { get; set; }
         public bool bancaConfirmada { get; set; }
+        public bool? status { get; set; }
         public DateTime? dataDefesa { get; set; }
     }
 }

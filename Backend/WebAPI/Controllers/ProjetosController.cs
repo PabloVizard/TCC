@@ -258,6 +258,21 @@ namespace WebAPI.Controllers
                         await _orientacoesApp.SaveChangesAsync();
                     }
                 }
+                else if (projetos.idAlunoResponsavel != null)
+                {
+                    OrientacoesModel orientacao = new OrientacoesModel
+                    {
+                        idAlunoOrientado = (int)projetosFind.idAlunoResponsavel,
+                        idProfessorOrientador = projetosFind.idProfessorResponsavel,
+                        idProjeto = projetosFind.id,
+                        idTurma = obterTurmaIdUsuario((int)projetosFind.idAlunoResponsavel),
+                        statusAprovacao = Entities.Enumerations.StatusAprovacao.Iniciado
+
+                    };
+
+                    var dataOrientacao = await _orientacoesApp.Add(orientacao);
+                    await _orientacoesApp.SaveChangesAsync();
+                }
 
                 return Ok(projetosFind);
             }

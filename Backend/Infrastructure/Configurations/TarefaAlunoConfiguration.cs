@@ -18,6 +18,14 @@ namespace Infrastructure.Configurations
             builder.HasKey(u => u.id);
             builder.Property(u => u.id).ValueGeneratedOnAdd();
 
+            builder.Property<int>("idTarefa");
+
+            builder.HasOne<Tarefas>()
+                   .WithMany()
+                   .HasForeignKey("idTarefa")
+                   .IsRequired()
+                   .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

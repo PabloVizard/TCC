@@ -16,6 +16,14 @@ namespace Infrastructure.Configurations
             builder.ToTable("Orientacoes");
             builder.HasKey(p => p.id);
             builder.Property(u => u.id).ValueGeneratedOnAdd();
+
+            builder.Property<int>("idProjeto");
+
+            builder.HasOne<Tarefas>()
+                   .WithMany()
+                   .HasForeignKey("idProjeto")
+                   .IsRequired()
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

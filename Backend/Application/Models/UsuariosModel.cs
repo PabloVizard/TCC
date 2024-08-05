@@ -24,8 +24,21 @@ namespace Application.Models
     {
         public string nomeCompleto { get; set; }
         public string email { get; set; }
+        public string cpf { get; set; }
         public TipoUsuario tipoUsuario { get; set; }
         public int matricula { get; set; }
+    }
+
+    public class UsuariosFullModel
+    {
+        public UsuariosLightModel? usuario { get; set; }
+        public PreRegistro? preRegistro {  get; set; }
+        public Projetos? projetos { get; set; }
+        public Orientacoes? orientacoes { get; set; }
+        public Bancas? bancas { get; set; }
+        public Faltas? faltas { get; set; }
+        public TarefaAluno? tarefaAluno { get; set; }
+        public Turmas? turmaAluno { get; set; }
     }
 
 }

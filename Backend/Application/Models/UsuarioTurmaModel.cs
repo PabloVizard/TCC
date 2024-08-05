@@ -20,4 +20,8 @@ namespace Application.Models
         public bool faltaAula {  get; set; }
         public int? idFalta { get; set; }
     }
+    public class UsuarioTurmaLightModel : BaseModel
+    {
+        public TurmasModel turma { get; set; }
+    }
 }

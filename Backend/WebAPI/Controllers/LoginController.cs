@@ -143,6 +143,7 @@ namespace WebAPI.Controllers
                 usuario.email = usuarios.email ?? usuario.email;
                 usuario.nomeCompleto = usuarios.nomeCompleto ?? usuario.nomeCompleto;
                 usuario.tipoUsuario = usuarios.tipoUsuario;
+                usuario.matricula = usuarios.matricula;
 
                 _usuariosApp.UpdateEntity(usuario);
                 await _usuariosApp.SaveChangesAsync();

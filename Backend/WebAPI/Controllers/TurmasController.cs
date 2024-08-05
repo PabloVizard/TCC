@@ -16,5 +16,30 @@ namespace WebAPI.Controllers
         {
             _turmasApp = turmasApp;
         }
+        [HttpGet]
+        [Route("ObterTurmasAtivas")]
+        public virtual async Task<IActionResult> ObterTurmasAtivas()
+        {
+            try
+            {
+                AuthModel authModel;
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+                var retorno = await _turmasApp.ListAsync(x => x.ativo);
+
+                return Ok(retorno);
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
     }
 }

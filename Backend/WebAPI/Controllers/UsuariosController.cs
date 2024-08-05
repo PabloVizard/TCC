@@ -1,6 +1,8 @@
-﻿using Application.Applications.Interfaces;
+﻿using Application.Applications;
+using Application.Applications.Interfaces;
 using Application.Models;
 using Entities.Entity;
+using Infrastructure.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,9 +14,26 @@ namespace WebAPI.Controllers
     public class UsuariosController : BaseController<Usuarios, UsuariosModel>
     {
         private readonly IUsuariosApp _usuariosApp;
-        public UsuariosController(IUsuariosApp usuariosApp) : base(usuariosApp)
+        private readonly IPreRegistroApp _preRegistroApp;
+        private readonly IBancasApp _bancasApp;
+        private readonly IFaltasApp _faltasApp;
+        private readonly IOrientacoesApp _orientacoesApp;
+        private readonly IProjetosApp _projetosApp;
+        private readonly ITarefaAlunoApp _tarefaAlunoApp;
+        private readonly IUsuarioTurmaApp _turmaAlunoApp;
+        private readonly ITurmasApp _turmasApp;
+        public UsuariosController(IUsuariosApp usuariosApp, IPreRegistroApp preRegistroApp, IBancasApp bancasApp,
+            IFaltasApp faltasApp, IOrientacoesApp orientacoesApp, IProjetosApp projetosApp, ITarefaAlunoApp tarefaAlunoApp, ITurmasApp turmasApp, IUsuarioTurmaApp usuarioTurmaApp) : base(usuariosApp)
         {
             _usuariosApp = usuariosApp;
+            _preRegistroApp = preRegistroApp;
+            _bancasApp = bancasApp;
+            _faltasApp = faltasApp;
+            _orientacoesApp = orientacoesApp;
+            _projetosApp = projetosApp;
+            _tarefaAlunoApp = tarefaAlunoApp;
+            _turmaAlunoApp = usuarioTurmaApp;
+            _turmasApp = turmasApp;
         }
         [HttpGet]
         [Route("ObterPorId")]
@@ -102,5 +121,119 @@ namespace WebAPI.Controllers
                 return BadRequest("Erro Inesperado:" + er.Message);
             }
         }
+
+        [HttpGet]
+        [Route("ObterTodosAlunos")]
+        public async Task<IActionResult> ObterTodosAlunos()
+        {
+            try
+            {
+                AuthModel authModel;
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+
+                var preRegistros = await _preRegistroApp.ListAsync(x => x.tipoUsuario == Entities.Enumerations.TipoUsuario.Aluno);
+
+                var usuariosRegistrados = await _usuariosApp.ListAsync(x => x.tipoUsuario == Entities.Enumerations.TipoUsuario.Aluno);
+
+                if (preRegistros == null || usuariosRegistrados == null)
+                {
+                    return NoContent();
+                }
+
+                var cpfsUsuariosRegistrados = usuariosRegistrados.Select(x => x.cpf).ToList();
+
+                List<UsuariosFullModel> retorno = new List<UsuariosFullModel>();
+
+                foreach (var usuario in usuariosRegistrados)
+                {
+                    var preRegistroUsuario = preRegistros.FirstOrDefault(x => x.cpf == usuario.cpf);
+                    var idTurma = _turmaAlunoApp.FindBy(x => x.idUsuario == usuario.id)?.idTurma;
+
+                    UsuariosFullModel usuariosFullModel = new UsuariosFullModel
+                    {
+                        usuario = _usuariosApp.ObterUsuarioLightPorId(usuario.id),
+                        preRegistro = preRegistroUsuario,
+                        bancas = _bancasApp.FindBy(x => x.idAlunoOrientado == usuario.id),
+                        projetos = _projetosApp.FindBy(x => x.idAlunoResponsavel == usuario.id),
+                        orientacoes = _orientacoesApp.FindBy(x => x.idAlunoOrientado == usuario.id),
+                        faltas = _faltasApp.FindBy(x => x.idAluno == usuario.id),
+                        tarefaAluno = _tarefaAlunoApp.FindBy(x => x.idAluno == usuario.id),
+                        turmaAluno = _turmasApp.FindBy(x => x.id == idTurma),
+                    };
+                    retorno.Add(usuariosFullModel);
+                }
+
+                foreach (var preRegistro in preRegistros)
+                {
+                    if (!cpfsUsuariosRegistrados.Contains(preRegistro.cpf))
+                    {
+                        UsuariosFullModel usuariosFullModel = new UsuariosFullModel
+                        {
+                            preRegistro = preRegistro,
+                            turmaAluno = _turmasApp.FindBy(x => x.id == preRegistro.idTurma)
+                        };
+                        retorno.Add(usuariosFullModel);
+                    }
+                }
+
+                return Ok(retorno);
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("AtualizarUsuario")]
+        public async Task<IActionResult> AtualizarUsuario([FromBody] UsuariosModel usuarios, int idTurma)
+        {
+            try
+            {
+                if (usuarios == null)
+                {
+                    return Unauthorized("Parametros Invalidos");
+                }
+                var usuario = _usuariosApp.Find(usuarios.id);
+                if (usuario == null)
+                {
+                    return BadRequest("Usuário não existente.");
+                }
+                usuario.nomeCompleto = usuarios.nomeCompleto ?? usuario.nomeCompleto;
+                usuario.matricula = usuarios.matricula;
+
+                _usuariosApp.UpdateEntity(usuario);
+                await _usuariosApp.SaveChangesAsync();
+
+                var usuarioTurma = _turmaAlunoApp.FindBy(x => x.idUsuario == usuario.id);
+
+                if (usuarioTurma != null)
+                {
+                    usuarioTurma.idTurma = idTurma;
+                    _turmaAlunoApp.Update(usuarioTurma);
+                    await _turmaAlunoApp.SaveChangesAsync();
+                }
+
+                return Ok(new
+                {
+                    data = usuario,
+                    message = "Usuário atualizado com sucesso."
+                });
+
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
+
     }
 }

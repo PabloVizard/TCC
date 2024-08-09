@@ -123,6 +123,54 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
+        [Route("ObterTodosProfessoresOrientadores")]
+        public async Task<IActionResult> ObterTodosProfessoresOrientadores()
+        {
+            try
+            {
+                AuthModel authModel;
+
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+
+                var usuarios = await _usuariosApp.ListAsync(x => x.tipoUsuario == Entities.Enumerations.TipoUsuario.Orientador || x.tipoUsuario == Entities.Enumerations.TipoUsuario.ProfessorOrientador || x.tipoUsuario == Entities.Enumerations.TipoUsuario.Professor);
+
+                if (usuarios == null)
+                {
+                    return NoContent();
+                }
+                List<UsuariosLightModel> retorno = new List<UsuariosLightModel>();
+
+                foreach (var usuario in usuarios)
+                {
+                    UsuariosLightModel usuariosLightModel = new UsuariosLightModel
+                    {
+                        id = usuario.id,
+                        email = usuario.email,
+                        nomeCompleto = usuario.nomeCompleto,
+                        cpf = usuario.cpf,
+                        tipoUsuario = usuario.tipoUsuario,
+                        matricula = usuario.matricula
+                    };
+                    retorno.Add(usuariosLightModel);
+                }
+
+                return Ok(retorno);
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
+
+        [HttpGet]
         [Route("ObterTodosAlunos")]
         public async Task<IActionResult> ObterTodosAlunos()
         {
@@ -162,7 +210,7 @@ namespace WebAPI.Controllers
                         usuario = _usuariosApp.ObterUsuarioLightPorId(usuario.id),
                         preRegistro = preRegistroUsuario,
                         bancas = _bancasApp.FindBy(x => x.idAlunoOrientado == usuario.id),
-                        projetos = _projetosApp.FindBy(x => x.idAlunoResponsavel == usuario.id),
+                        projetos = ObterProjetosFullModelPorIdAluno(usuario.id),
                         orientacoes = _orientacoesApp.FindBy(x => x.idAlunoOrientado == usuario.id),
                         faltas = _faltasApp.FindBy(x => x.idAluno == usuario.id),
                         tarefaAluno = _tarefaAlunoApp.FindBy(x => x.idAluno == usuario.id),
@@ -233,6 +281,143 @@ namespace WebAPI.Controllers
             {
                 return BadRequest("Erro Inesperado:" + er.Message);
             }
+        }
+
+        [HttpPost]
+        [Route("CadastrarProfessor")]
+        public async Task<IActionResult> CadastrarProfessor([FromBody] UsuariosLightModel usuarios)
+        {
+            try
+            {
+                if (usuarios == null)
+                {
+                    return Unauthorized("Parametros Invalidos");
+                }
+                var usuarioCadastrar = new UsuariosModel
+                {
+                    cpf = usuarios.cpf,
+                    email = usuarios.email,
+                    matricula = usuarios.matricula,
+                    nomeCompleto = usuarios.nomeCompleto,
+                    tipoUsuario = usuarios.tipoUsuario,
+                    senha = Cryptography.ConvertToSha256Hash("123456").ToLower()
+                };
+
+                await _usuariosApp.Add(usuarioCadastrar);
+                await _usuariosApp.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    data = usuarioCadastrar,
+                    message = "Usuário atualizado com sucesso."
+                });
+
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("AtualizarProfessor")]
+        public async Task<IActionResult> AtualizarProfessor([FromBody] UsuariosLightModel usuarios)
+        {
+            try
+            {
+                if (usuarios == null)
+                {
+                    return Unauthorized("Parametros Invalidos");
+                }
+                var usuario = _usuariosApp.Find(usuarios.id);
+
+                if(usuario == null)
+                {
+                    return BadRequest("Usuário não encontrado");
+                }
+
+                usuario.email = usuarios.email;
+                usuario.tipoUsuario = usuarios.tipoUsuario;
+                usuario.matricula = usuarios.matricula;
+                usuario.cpf = usuarios.cpf;
+                usuario.nomeCompleto = usuarios.nomeCompleto;
+
+                _usuariosApp.Update(usuario);
+                await _usuariosApp.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    data = usuario,
+                    message = "Usuário atualizado com sucesso."
+                });
+
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("Remover")]
+        public override async Task<IActionResult> Remover(int matricula)
+        {
+            try
+            {
+                var aluno = _usuariosApp.FindBy(x => x.matricula == matricula);
+                var preregistro = _preRegistroApp.FindBy(x => x.matricula == matricula);
+
+                if (aluno == null && preregistro != null)
+                {
+                    _preRegistroApp.Remove(preregistro);
+                    await _preRegistroApp.SaveChangesAsync();
+                }
+                else if (aluno != null && preregistro == null)
+                {
+                    _usuariosApp.Remove(aluno);
+                    await _usuariosApp.SaveChangesAsync();
+                }
+                else if (aluno != null && preregistro != null)
+                {
+                    _preRegistroApp.Remove(preregistro);
+                    await _preRegistroApp.SaveChangesAsync();
+
+                    _usuariosApp.Remove(aluno);
+                    await _usuariosApp.SaveChangesAsync();
+                }
+
+                return Ok(new
+                {
+                    data = aluno,
+                    message = "Removido com sucesso."
+                });
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest("Erro Inesperado: " + ex.Message);
+            }
+
+        }
+
+        private ProjetosFullModel ObterProjetosFullModelPorIdAluno(int idUsuario)
+        {
+            var projeto = _projetosApp.FindBy(x => x.idAlunoResponsavel == idUsuario);
+
+            if (projeto == null)
+            {
+                return null;
+            }
+
+            return new ProjetosFullModel
+            {
+                id = projeto.id,
+                area = projeto.area,
+                descricao = projeto.descricao,
+                nome = projeto.nome,
+                ProfessorResponsavel = _usuariosApp.ObterUsuarioLightPorId(projeto.idProfessorResponsavel),
+                AlunoResponsavel = _usuariosApp.ObterUsuarioLightPorId((int)projeto.idAlunoResponsavel)
+            };
         }
 
     }

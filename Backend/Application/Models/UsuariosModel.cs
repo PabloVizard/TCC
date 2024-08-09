@@ -33,7 +33,7 @@ namespace Application.Models
     {
         public UsuariosLightModel? usuario { get; set; }
         public PreRegistro? preRegistro {  get; set; }
-        public Projetos? projetos { get; set; }
+        public ProjetosFullModel? projetos { get; set; }
         public Orientacoes? orientacoes { get; set; }
         public Bancas? bancas { get; set; }
         public Faltas? faltas { get; set; }

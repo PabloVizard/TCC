@@ -41,5 +41,30 @@ namespace WebAPI.Controllers
                 return BadRequest("Erro Inesperado:" + er.Message);
             }
         }
+        [HttpGet]
+        [Route("ObterTodasTurmas")]
+        public virtual async Task<IActionResult> ObterTodasTurmas()
+        {
+            try
+            {
+                AuthModel authModel;
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+                var retorno = await _turmasApp.ListAsync();
+
+                return Ok(retorno);
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
     }
 }

@@ -59,7 +59,7 @@ namespace WebAPI.Controllers
                 }
                 var retorno = await _turmasApp.ListAsync();
 
-                return Ok(retorno);
+                return Ok(retorno.OrderByDescending(x => x.ano).OrderByDescending(x => x.semestre));
             }
             catch (Exception er)
             {

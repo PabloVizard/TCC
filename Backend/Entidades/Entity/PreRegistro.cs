@@ -14,6 +14,6 @@ namespace Entities.Entity
         public TipoUsuario tipoUsuario { get; set; }
         public bool cadastrado { get; set; }
         public int idTurma { get; set; }
-        public int matricula { get; set; }
+        public string matricula { get; set; }
     }
 }

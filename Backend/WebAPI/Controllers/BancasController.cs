@@ -84,7 +84,7 @@ namespace WebAPI.Controllers
                     return Unauthorized("Erro ao obter token:" + ex.Message);
                 }
 
-                var bancas = await _bancasApp.ListAsync(x => x.idProfessorOrientador == orientadorId);
+                var bancas = await _bancasApp.ListAsync(x => x.idProfessorOrientador == orientadorId || x.idAvaliador01 == orientadorId || x.idAvaliador02 == orientadorId);
 
                 if (bancas == null)
                 {
@@ -118,6 +118,58 @@ namespace WebAPI.Controllers
                 return BadRequest("Erro Inesperado:" + er.Message);
             }
         }
+        [HttpGet]
+        [Route("ObterTodasBancas")]
+        public async Task<IActionResult> ObterTodasBancas()
+        {
+            try
+            {
+                AuthModel authModel;
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+
+                var bancas = await _bancasApp.ListAsync();
+
+                if (bancas == null)
+                {
+                    return NoContent();
+                }
+
+                List<BancasFullModel> bancasFull = new List<BancasFullModel>();
+
+                foreach (var banca in bancas)
+                {
+                    bancasFull.Add(new BancasFullModel
+                    {
+                        id = banca.id,
+                        projeto = await _projetosApp.FindByAsync(x => x.id == banca.idProjeto),
+                        professorOrientador = obterUsuarioLightPorId(banca.idProfessorOrientador),
+                        alunoOrientado = obterUsuarioLightPorId(banca.idAlunoOrientado),
+                        avaliador01 = obterUsuarioLightPorId(banca.idAvaliador01),
+                        avaliador02 = banca.idAvaliador02 != null ? obterUsuarioLightPorId((int)banca.idAvaliador02) : null,
+                        ano = banca.ano,
+                        bancaConfirmada = banca.bancaConfirmada,
+                        dataDefesa = banca.dataDefesa,
+                        semestre = banca.semestre
+                    });
+                }
+
+
+                return Ok(bancasFull.OrderByDescending(x => x.ano).OrderByDescending(x => x.semestre)) ;
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
+
 
         private UsuariosLightModel obterUsuarioLightPorId(int idUsuario)
         {

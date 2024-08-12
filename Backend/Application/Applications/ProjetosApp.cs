@@ -1,6 +1,7 @@
 ﻿using Application.Applications.Interfaces;
 using Application.Models;
 using AutoMapper;
+using Domain.Services;
 using Domain.Services.Interfaces;
 using Entities.Entity;
 using System;
@@ -21,5 +22,7 @@ namespace Application.Applications
             _projetosService = projetosService;
             _mapper = mapper;
         }
+
+        
     }
 }

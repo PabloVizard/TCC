@@ -17,7 +17,7 @@ namespace Application.Models
         public string email { get; set; }
         public string senha { get; set; }
         public TipoUsuario tipoUsuario { get; set; }
-        public int matricula { get; set; }
+        public string matricula { get; set; }
     }
 
     public class UsuariosLightModel : BaseModel
@@ -26,7 +26,7 @@ namespace Application.Models
         public string email { get; set; }
         public string cpf { get; set; }
         public TipoUsuario tipoUsuario { get; set; }
-        public int matricula { get; set; }
+        public string matricula { get; set; }
     }
 
     public class UsuariosFullModel

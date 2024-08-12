@@ -188,6 +188,57 @@ namespace WebAPI.Controllers
                 return BadRequest("Erro Inesperado:" + er.Message);
             }
         }
+
+        [HttpGet]
+        [Route("ObterTodasAulas")]
+        public async Task<IActionResult> ObterTodasAulas()
+        {
+            try
+            {
+                AuthModel authModel;
+
+                try
+                {
+                    authModel = await GetTokenAuthModelAsync();
+                }
+                catch (Exception ex)
+                {
+                    return Unauthorized("Erro ao obter token:" + ex.Message);
+                }
+
+                var aulas = await _aulasApp.ListAsync();
+
+                if (aulas == null)
+                {
+                    return NoContent();
+                }
+
+                List<AulasFullModel> aulasFullModel = new List<AulasFullModel>();
+
+                foreach (var aula in aulas)
+                {
+                    aulasFullModel.Add(
+                        new AulasFullModel
+                        {
+                            id = aula.id,
+                            professor = _usuariosApp.ObterUsuarioLightPorId(aula.idProfessor),
+                            turma = _turmasApp.ObterTurmaPorId(aula.idTurma),
+                            dataAula = aula.dataAula,
+                            descricao = aula.descricao,
+                            local = aula.local,
+                            link = aula.link,
+                        });
+                }
+
+
+                return Ok(aulasFullModel);
+            }
+            catch (Exception er)
+            {
+                return BadRequest("Erro Inesperado:" + er.Message);
+            }
+        }
+
         [HttpGet]
         [Route("ObterAulaPorId")]
         public async Task<IActionResult> ObterAulaPorId(int aulaId)

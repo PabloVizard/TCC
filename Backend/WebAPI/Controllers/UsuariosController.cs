@@ -93,7 +93,7 @@ namespace WebAPI.Controllers
                     return Unauthorized("Erro ao obter token:" + ex.Message);
                 }
 
-                var usuarios = await _usuariosApp.ListAsync(x => x.tipoUsuario == Entities.Enumerations.TipoUsuario.Orientador || x.tipoUsuario == Entities.Enumerations.TipoUsuario.ProfessorOrientador);
+                var usuarios = await _usuariosApp.ListAsync(x => x.tipoUsuario == Entities.Enumerations.TipoUsuario.Orientador || x.tipoUsuario == Entities.Enumerations.TipoUsuario.ProfessorOrientador || x.tipoUsuario == Entities.Enumerations.TipoUsuario.Coordenador);
 
                 if (usuarios == null)
                 {
@@ -140,7 +140,7 @@ namespace WebAPI.Controllers
                     return Unauthorized("Erro ao obter token:" + ex.Message);
                 }
 
-                var usuarios = await _usuariosApp.ListAsync(x => x.tipoUsuario == Entities.Enumerations.TipoUsuario.Orientador || x.tipoUsuario == Entities.Enumerations.TipoUsuario.ProfessorOrientador || x.tipoUsuario == Entities.Enumerations.TipoUsuario.Professor);
+                var usuarios = await _usuariosApp.ListAsync(x => x.tipoUsuario == Entities.Enumerations.TipoUsuario.Orientador || x.tipoUsuario == Entities.Enumerations.TipoUsuario.ProfessorOrientador || x.tipoUsuario == Entities.Enumerations.TipoUsuario.Professor || x.tipoUsuario == Entities.Enumerations.TipoUsuario.Coordenador);
 
                 if (usuarios == null)
                 {
@@ -359,8 +359,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete]
-        [Route("Remover")]
-        public override async Task<IActionResult> Remover(int matricula)
+        [Route("RemoverUsuario")]
+        public async Task<IActionResult> RemoverUsuario(string matricula)
         {
             try
             {

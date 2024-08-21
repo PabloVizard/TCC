@@ -163,7 +163,7 @@ namespace WebAPI.Controllers
                 }
 
 
-                return Ok(bancasFull.OrderByDescending(x => x.ano).OrderByDescending(x => x.semestre)) ;
+                return Ok(bancasFull.OrderByDescending(x => x.ano).ThenByDescending(x => x.semestre)) ;
             }
             catch (Exception er)
             {
@@ -216,7 +216,7 @@ namespace WebAPI.Controllers
                 }
 
 
-                return Ok(bancasFull.OrderByDescending(x => x.ano).OrderByDescending(x => x.semestre));
+                return Ok(bancasFull.OrderByDescending(x => x.ano).ThenByDescending(x => x.semestre));
             }
             catch (Exception er)
             {
@@ -269,7 +269,7 @@ namespace WebAPI.Controllers
                 }
 
 
-                return Ok(bancasFull.OrderByDescending(x => x.ano).OrderByDescending(x => x.semestre));
+                return Ok(bancasFull.OrderByDescending(x => x.ano).ThenByDescending(x => x.semestre));
             }
             catch (Exception er)
             {

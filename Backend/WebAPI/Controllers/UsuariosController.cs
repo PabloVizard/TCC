@@ -269,6 +269,12 @@ namespace WebAPI.Controllers
                     _turmaAlunoApp.Update(usuarioTurma);
                     await _turmaAlunoApp.SaveChangesAsync();
                 }
+                else if(usuarioTurma == null && idTurma != 0)
+                {
+                    var usuarioSalvar = new UsuarioTurmaModel() { idUsuario = usuarios.id, idTurma = idTurma };
+                    await _turmaAlunoApp.Add(usuarioSalvar);
+                    await _turmaAlunoApp.SaveChangesAsync();
+                }
 
                 return Ok(new
                 {

@@ -106,7 +106,8 @@ namespace WebAPI.Controllers
                             ano = banca.ano,
                             bancaConfirmada = banca.bancaConfirmada,
                             dataDefesa = banca.dataDefesa,
-                            semestre = banca.semestre
+                            semestre = banca.semestre,
+                            status = banca.status,
                         });
                 }
                 

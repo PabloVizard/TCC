@@ -4,6 +4,8 @@ using Application.Models;
 using Entities.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
 
 namespace WebAPI.Controllers
 {
@@ -57,7 +59,9 @@ namespace WebAPI.Controllers
                     bancaConfirmada = banca.bancaConfirmada,
                     dataDefesa = banca.dataDefesa,
                     semestre = banca.semestre,
-                    status = banca.status
+                    status = banca.status,
+                    numeroDefesa = banca.numeroDefesa,
+                    localDefesa = banca.localDefesa,
                 };
 
                 return Ok(bancaFull);
@@ -108,7 +112,9 @@ namespace WebAPI.Controllers
                             dataDefesa = banca.dataDefesa,
                             semestre = banca.semestre,
                             status = banca.status,
-                        });
+                            numeroDefesa = banca.numeroDefesa,
+                            localDefesa = banca.localDefesa,
+                    });
                 }
                 
 
@@ -159,12 +165,14 @@ namespace WebAPI.Controllers
                         bancaConfirmada = banca.bancaConfirmada,
                         dataDefesa = banca.dataDefesa,
                         semestre = banca.semestre,
-                        status = banca.status
+                        status = banca.status,
+                        numeroDefesa = banca.numeroDefesa,
+                        localDefesa = banca.localDefesa,
                     });
                 }
 
 
-                return Ok(bancasFull.OrderByDescending(x => x.ano).ThenByDescending(x => x.semestre)) ;
+                return Ok(bancasFull.OrderByDescending(x => x.numeroDefesa).ThenByDescending(x => x.ano).ThenByDescending(x => x.semestre)) ;
             }
             catch (Exception er)
             {
@@ -212,7 +220,9 @@ namespace WebAPI.Controllers
                         bancaConfirmada = banca.bancaConfirmada,
                         dataDefesa = banca.dataDefesa,
                         semestre = banca.semestre,
-                        status = banca.status
+                        status = banca.status,
+                        numeroDefesa = banca.numeroDefesa,
+                        localDefesa = banca.localDefesa,
                     });
                 }
 
@@ -224,6 +234,66 @@ namespace WebAPI.Controllers
                 return BadRequest("Erro Inesperado:" + er.Message);
             }
         }
+
+        public override async Task<IActionResult> Atualizar(BancasModel dados)
+        {
+            try
+            {
+                // Verificar se a banca a ser atualizada já existe
+                var bancaExistente = await _bancasApp.FindAsync(dados.id);
+                if (bancaExistente == null)
+                {
+                    return NotFound("Banca não encontrada.");
+                }
+
+                // Atualizar os dados da banca existente com os novos dados
+                bancaExistente.idAvaliador02 = dados.idAvaliador02;
+                bancaExistente.dataDefesa = dados.dataDefesa;
+                bancaExistente.status = dados.status;
+                bancaExistente.bancaConfirmada = dados.bancaConfirmada;
+                bancaExistente.localDefesa = dados.localDefesa;
+
+                // Atualizar a banca no banco de dados
+                _bancasApp.Update(bancaExistente);
+
+                if (bancaExistente.bancaConfirmada)
+                {
+                    // Buscar todas as bancas confirmadas e ordená-las por data e matrícula do aluno
+                    var bancas = _bancasApp.List(x => x.bancaConfirmada);
+                        
+                    if (!bancas.Contains(bancaExistente))
+                    {
+                        bancas.Add(bancaExistente);
+                    }
+
+                    //Me desculpe quem pegar essa parte no futuro, eu sei que isso não é a maneira mais otimizada, mas eu tava doido pra formar logo
+                    bancas = bancas.OrderBy(x => x.dataDefesa)
+                        .ThenBy(x => _usuariosApp.FindBy(y => y.id == x.idAlunoOrientado).matricula ) // Critério de desempate
+                        .ToList();
+
+                    int? numeroDefesa = bancas.FirstOrDefault()?.numeroDefesa != null ? bancas.FirstOrDefault()?.numeroDefesa : 1;
+
+                    foreach (var banca in bancas)
+                    {
+                        banca.numeroDefesa = numeroDefesa++;
+                        _bancasApp.Update(banca);
+                    }
+                }
+                
+
+                // Salvar as alterações
+                await _bancasApp.SaveChangesAsync();
+
+                return Ok(bancaExistente);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Erro Inesperado: " + ex.Message);
+            }
+        }
+
+
+
 
         [HttpPut]
         [Route("ConfirmarSugestao")]
@@ -265,7 +335,9 @@ namespace WebAPI.Controllers
                         bancaConfirmada = banca.bancaConfirmada,
                         dataDefesa = banca.dataDefesa,
                         semestre = banca.semestre,
-                        status = banca.status
+                        status = banca.status,
+                        numeroDefesa = banca.numeroDefesa,
+                        localDefesa = banca.localDefesa,
                     });
                 }
 
@@ -351,7 +423,9 @@ namespace WebAPI.Controllers
                         bancaConfirmada = banca.bancaConfirmada,
                         dataDefesa = banca.dataDefesa,
                         semestre = banca.semestre,
-                        status = banca.status
+                        status = banca.status,
+                        numeroDefesa = banca.numeroDefesa,
+                        localDefesa = banca.localDefesa,
                     });
                 }
 

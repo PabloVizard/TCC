@@ -36,7 +36,7 @@ namespace Application.Models
         public ProjetosFullModel? projetos { get; set; }
         public Orientacoes? orientacoes { get; set; }
         public Bancas? bancas { get; set; }
-        public Faltas? faltas { get; set; }
+        public List<Faltas>? faltas { get; set; }
         public TarefaAluno? tarefaAluno { get; set; }
         public Turmas? turmaAluno { get; set; }
     }

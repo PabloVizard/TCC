@@ -19,6 +19,8 @@ namespace Application.Models
         public bool bancaConfirmada { get; set; }
         public bool? status {  get; set; }
         public DateTime? dataDefesa { get; set; }
+        public int? numeroDefesa { get; set; }
+        public string? localDefesa { get; set; }
     }
     public class BancasFullModel: BaseModel
     {
@@ -32,5 +34,7 @@ namespace Application.Models
         public bool bancaConfirmada { get; set; }
         public bool? status { get; set; }
         public DateTime? dataDefesa { get; set; }
+        public int? numeroDefesa { get; set; }
+        public string? localDefesa { get; set; }
     }
 }

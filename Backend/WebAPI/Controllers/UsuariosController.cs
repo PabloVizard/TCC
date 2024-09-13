@@ -212,7 +212,7 @@ namespace WebAPI.Controllers
                         bancas = _bancasApp.FindBy(x => x.idAlunoOrientado == usuario.id),
                         projetos = ObterProjetosFullModelPorIdAluno(usuario.id),
                         orientacoes = _orientacoesApp.FindBy(x => x.idAlunoOrientado == usuario.id),
-                        faltas = _faltasApp.FindBy(x => x.idAluno == usuario.id),
+                        faltas = _faltasApp.List(x => x.idAluno == usuario.id),
                         tarefaAluno = _tarefaAlunoApp.FindBy(x => x.idAluno == usuario.id),
                         turmaAluno = _turmasApp.FindBy(x => x.id == idTurma),
                     };
